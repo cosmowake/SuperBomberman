@@ -14,6 +14,7 @@ namespace SuperBomberman
     class Player : Entity
     {
         List<Bomb> bombList = new List<Bomb>();
+        int bombMaxCount = 2;
 
         public delegate Vector2 BombStand(Vector2 position);
         public event BombStand BombStandEvent;
@@ -88,17 +89,20 @@ namespace SuperBomberman
         {
             if (InputManager.Instance.KeyPressed(Keys.Space))
             {
-                Vector2 position = BombStandEvent(new Vector2(CollisionRectangle.X,CollisionRectangle.Y));
+                if (bombMaxCount > bombList.Count)
+                { 
+                    Vector2 position = BombStandEvent(new Vector2(CollisionRectangle.X,CollisionRectangle.Y));
 
-                Bomb bomb = new Bomb("Play/Bomb3x", position, 48);
-                bomb.DestroyBomb += () =>
-                {
-                    bombList.Remove(bomb);
-                    bomb.UnloadContent();
-                };
-                bomb.LoadContent();
+                    Bomb bomb = new Bomb("Play/Bomb3x", position, 48);
+                    bomb.DestroyBomb += () =>
+                    {
+                        bombList.Remove(bomb);
+                        bomb.UnloadContent();
+                    };
+                    bomb.LoadContent();
 
-                bombList.Add(bomb);
+                    bombList.Add(bomb);
+                }
             }
         }
 
@@ -139,12 +143,12 @@ namespace SuperBomberman
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            base.Draw(spriteBatch);
-
             foreach (Bomb bomb in bombList)
             {
                 bomb.Draw(spriteBatch);
             }
+
+            base.Draw(spriteBatch);
         }
         
     }
