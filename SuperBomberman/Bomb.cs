@@ -16,7 +16,7 @@ namespace SuperBomberman
         Point Position;
         public int Power { get; private set; }
 
-        public event Action DestroyBomb;
+        public event Action ExplosionBomb;
 
         DelayedAction explosionDelayed;
 
@@ -30,7 +30,7 @@ namespace SuperBomberman
             explosionDelayed = new DelayedAction(
                 new Action(() => 
                 {
-                    DestroyBomb();
+                    ExplosionBomb();
                     
                     UnloadContent();
                     

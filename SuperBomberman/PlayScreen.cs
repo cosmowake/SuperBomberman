@@ -21,7 +21,7 @@ namespace SuperBomberman
         {
             base.LoadContent();
 
-            map = new Map("Play/MapTile1_3x");
+            map = new Map("Play/MapTile1_3x","Play/Bomb3x");
             map.LoadContent();
 
             Vector2 playerVector = map.GetVectorByXAndY(1, 1);
@@ -30,6 +30,7 @@ namespace SuperBomberman
             player.BombStandEvent += ((Vector2 position) => 
                 {
                     Point p = map.GetXAndYByVector(position);
+                    
                     return map.GetVectorByXAndY(p.X, p.Y);
                 });
 

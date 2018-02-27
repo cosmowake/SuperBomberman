@@ -28,7 +28,7 @@ namespace SuperBomberman
             CollisionRectangle = new Rectangle(startPoint.X, startPoint.Y, tileSize, tileSize);
 
             Image imageTemp = new Image(spritePath, new Rectangle(0, 0, tileSize, (int)(tileSize * 1.5)), new Vector2(startPoint.X, startPoint.Y - (int)(tileSize * 0.5)));
-            Image = new AnimationImage(imageTemp, new List<int>(new int[4] { 1, 2, 1, 3 }));
+            Image = new AnimationImage(imageTemp, new List<int>(new int[4] { 0, 1, 0, 2 }));
             
         }
 
@@ -94,7 +94,7 @@ namespace SuperBomberman
                     Vector2 position = BombStandEvent(new Vector2(CollisionRectangle.X,CollisionRectangle.Y));
 
                     Bomb bomb = new Bomb("Play/Bomb3x", position, 48);
-                    bomb.DestroyBomb += () =>
+                    bomb.ExplosionBomb += () =>
                     {
                         bombList.Remove(bomb);
                         bomb.UnloadContent();
