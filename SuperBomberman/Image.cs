@@ -23,7 +23,6 @@ namespace SuperBomberman
         Vector2 origin;
 
         ContentManager content;
-        RenderTarget2D renderTarget;
 
         public Image(string texturePath)
         {

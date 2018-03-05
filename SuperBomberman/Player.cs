@@ -15,9 +15,13 @@ namespace SuperBomberman
     {
         List<Bomb> bombList = new List<Bomb>();
         int bombMaxCount = 2;
+        int power = 1;
 
         public delegate Vector2 BombStand(Vector2 position);
         public event BombStand BombStandEvent;
+
+        public delegate void Explosion(Vector2 pos, int power);
+        public Explosion explosion;
 
         public Player(string spritePath,Point startPoint, int tileSize)
         {
@@ -79,9 +83,7 @@ namespace SuperBomberman
 
 
             ChangePosition(Velocity);
-
-
-            // Console.WriteLine(Image.image.Position.ToString() + "|||||" + CollisionRectangle.ToString());
+            
 
         }
 
@@ -96,6 +98,7 @@ namespace SuperBomberman
                     Bomb bomb = new Bomb("Play/Bomb3x", position, 48);
                     bomb.ExplosionBomb += () =>
                     {
+                        explosion(bomb.Position, power);
                         bombList.Remove(bomb);
                         bomb.UnloadContent();
                     };
@@ -133,11 +136,12 @@ namespace SuperBomberman
 
             MoveUpdate(gameTime);
             BombUpdate(gameTime);
-            Console.WriteLine(CollisionRectangle.ToString());
+
+            Player p = this;
 
             for (int i = 0;i < bombList.Count ;i++)
             {
-                bombList[i].Update(gameTime);
+                bombList[i].Update(gameTime, ref p);
             }
         }
 

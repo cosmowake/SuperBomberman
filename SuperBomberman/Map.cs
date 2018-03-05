@@ -13,45 +13,57 @@ namespace SuperBomberman
 {
     class Map
     {
-        public Image Sprite;
-        public MapTile[,] mapTiles;
+        Texture2D sprite;
+        MapTile[,] mapTiles;
         public Vector2 Position;
         int tileSize;
-        public MapTilesAnimation explosionList;
+        public ExplosionTilesManager explosionList;
+
+        List<Entity> entityList = new List<Entity>();
+
+        public AnimatedMapTiles animatedWalls;
 
         public Map(string spritePathMap, string spritePathExplosion)
         {
-            Sprite = new Image(spritePathMap);
-            explosionList = new MapTilesAnimation(spritePathExplosion);
+            ContentManager content = new ContentManager(ScreenManager.Instance.Content.ServiceProvider, "Content"); ;
+            sprite = content.Load<Texture2D>(spritePathMap);
+
+            explosionList = new ExplosionTilesManager(spritePathExplosion);
             Position = Vector2.Zero;
-            MapGenerator(new Vector2(128, 128), 13, 15, 48);
+            MapGenerator(new Vector2(0, 0), 15, 21, 48, spritePathMap);
         }
 
         void Explosion(Vector2 position, int power)
         {
-            MapTilesAnimationList animationListTemp = new MapTilesAnimationList();
-            animationListTemp.SequenceFrame = new List<int>(new int[5] { 0, 1, 2, 3, 4 });
-            List<MapTileAnimationElement> tempElementList = new List<MapTileAnimationElement>();
             Point startExplosionPosition = GetXAndYByVector(position);
 
-            MapTileAnimationElement mapTileAnimationElement = new MapTileAnimationElement(
+            if (mapTiles[startExplosionPosition.Y, startExplosionPosition.X].IsSolid)
+            {
+                return;
+            }
+
+            ExplosionTilesList explosionTilesList = new ExplosionTilesList();
+            explosionTilesList.SequenceFrame = new List<int>(new int[12] { 4, 3, 2, 1, 0, 0, 0, 0, 1, 2, 3, 4 });
+            List<ExplosionTile> tempExplosionList = new List<ExplosionTile>();
+
+            ExplosionTile ExplosionTile = new ExplosionTile(
                 new Rectangle(0, 1 * tileSize, tileSize, tileSize),
                 GetVectorByXAndY(startExplosionPosition.X, startExplosionPosition.Y));
 
-            tempElementList.Add(mapTileAnimationElement);
-            
+            tempExplosionList.Add(ExplosionTile);
+
 
             for (int i = 0; i < power; i++)
             {
                 if (i == power - 1)
                 {
-                    if (startExplosionPosition.X - i >= 0 && !mapTiles[startExplosionPosition.X - i - 1, startExplosionPosition.Y].IsSolid)
+                    if (startExplosionPosition.X - i - 1 >= 0 && !mapTiles[startExplosionPosition.Y, startExplosionPosition.X - i - 1].IsSolid)
                     {
-                        mapTileAnimationElement = new MapTileAnimationElement(
-                        new Rectangle(0, 7 * tileSize, tileSize, tileSize),
+                        ExplosionTile = new ExplosionTile(
+                        new Rectangle(4 * tileSize, 7 * tileSize, tileSize, tileSize),
                         GetVectorByXAndY(startExplosionPosition.X - i - 1, startExplosionPosition.Y));
 
-                        tempElementList.Add(mapTileAnimationElement);
+                        tempExplosionList.Add(ExplosionTile);
                     }
                     else
                     {
@@ -60,13 +72,13 @@ namespace SuperBomberman
                 }
                 else
                 {
-                    if (startExplosionPosition.X - i >= 0 && !mapTiles[startExplosionPosition.X - i - 1, startExplosionPosition.Y].IsSolid)
+                    if (startExplosionPosition.X - i - 1 >= 0 && !mapTiles[startExplosionPosition.Y, startExplosionPosition.X - i - 1].IsSolid)
                     {
-                        mapTileAnimationElement = new MapTileAnimationElement(
-                        new Rectangle(0, 3 * tileSize, tileSize, tileSize),
+                        ExplosionTile = new ExplosionTile(
+                        new Rectangle(4 * tileSize, 3 * tileSize, tileSize, tileSize),
                         GetVectorByXAndY(startExplosionPosition.X - i - 1, startExplosionPosition.Y));
 
-                        tempElementList.Add(mapTileAnimationElement);
+                        tempExplosionList.Add(ExplosionTile);
                     }
                     else
                     {
@@ -78,13 +90,13 @@ namespace SuperBomberman
             {
                 if (i == power - 1)
                 {
-                    if (startExplosionPosition.X + i < mapTiles.GetLength(0) && !mapTiles[startExplosionPosition.X + i + 1, startExplosionPosition.Y].IsSolid)
+                    if (startExplosionPosition.X + i + 1 < mapTiles.GetLength(0) && !mapTiles[startExplosionPosition.Y, startExplosionPosition.X + i + 1].IsSolid)
                     {
-                        mapTileAnimationElement = new MapTileAnimationElement(
-                        new Rectangle(0, 6 * tileSize, tileSize, tileSize),
+                        ExplosionTile = new ExplosionTile(
+                        new Rectangle(4 * tileSize, 6 * tileSize, tileSize, tileSize),
                         GetVectorByXAndY(startExplosionPosition.X + i + 1, startExplosionPosition.Y));
 
-                        tempElementList.Add(mapTileAnimationElement);
+                        tempExplosionList.Add(ExplosionTile);
                     }
                     else
                     {
@@ -93,13 +105,13 @@ namespace SuperBomberman
                 }
                 else
                 {
-                    if (startExplosionPosition.X + i < mapTiles.GetLength(0) && !mapTiles[startExplosionPosition.X + i + 1, startExplosionPosition.Y].IsSolid)
+                    if (startExplosionPosition.X + i + 1 < mapTiles.GetLength(0) && !mapTiles[startExplosionPosition.Y, startExplosionPosition.X + i + 1].IsSolid)
                     {
-                        mapTileAnimationElement = new MapTileAnimationElement(
-                        new Rectangle(0, 3 * tileSize, tileSize, tileSize),
+                        ExplosionTile = new ExplosionTile(
+                        new Rectangle(4 * tileSize, 3 * tileSize, tileSize, tileSize),
                         GetVectorByXAndY(startExplosionPosition.X + i + 1, startExplosionPosition.Y));
 
-                        tempElementList.Add(mapTileAnimationElement);
+                        tempExplosionList.Add(ExplosionTile);
                     }
                     else
                     {
@@ -113,13 +125,13 @@ namespace SuperBomberman
             {
                 if (i == power - 1)
                 {
-                    if (startExplosionPosition.Y - i >= 0 && !mapTiles[startExplosionPosition.X, startExplosionPosition.Y - i - 1].IsSolid)
+                    if (startExplosionPosition.Y - i - 1 >= 0 && !mapTiles[startExplosionPosition.Y - i - 1, startExplosionPosition.X].IsSolid)
                     {
-                        mapTileAnimationElement = new MapTileAnimationElement(
-                        new Rectangle(0, 4 * tileSize, tileSize, tileSize),
+                        ExplosionTile = new ExplosionTile(
+                        new Rectangle(4 * tileSize, 4 * tileSize, tileSize, tileSize),
                         GetVectorByXAndY(startExplosionPosition.X, startExplosionPosition.Y - i - 1));
 
-                        tempElementList.Add(mapTileAnimationElement);
+                        tempExplosionList.Add(ExplosionTile);
                     }
                     else
                     {
@@ -128,13 +140,13 @@ namespace SuperBomberman
                 }
                 else
                 {
-                    if (startExplosionPosition.Y - i >= 0 && !mapTiles[startExplosionPosition.X, startExplosionPosition.Y - i - 1].IsSolid)
+                    if (startExplosionPosition.Y - i - 1 >= 0 && !mapTiles[startExplosionPosition.Y - i - 1, startExplosionPosition.X].IsSolid)
                     {
-                        mapTileAnimationElement = new MapTileAnimationElement(
-                        new Rectangle(0, 2 * tileSize, tileSize, tileSize),
+                        ExplosionTile = new ExplosionTile(
+                        new Rectangle(4 * tileSize, 2 * tileSize, tileSize, tileSize),
                         GetVectorByXAndY(startExplosionPosition.X, startExplosionPosition.Y - i - 1));
 
-                        tempElementList.Add(mapTileAnimationElement);
+                        tempExplosionList.Add(ExplosionTile);
                     }
                     else
                     {
@@ -146,13 +158,13 @@ namespace SuperBomberman
             {
                 if (i == power - 1)
                 {
-                    if (startExplosionPosition.Y + i < mapTiles.GetLength(1) && !mapTiles[startExplosionPosition.X, startExplosionPosition.Y + i + 1].IsSolid)
+                    if (startExplosionPosition.Y + i + 1 < mapTiles.GetLength(0) && !mapTiles[startExplosionPosition.Y + i + 1, startExplosionPosition.X].IsSolid)
                     {
-                        mapTileAnimationElement = new MapTileAnimationElement(
-                        new Rectangle(0, 5 * tileSize, tileSize, tileSize),
+                        ExplosionTile = new ExplosionTile(
+                        new Rectangle(4 * tileSize, 5 * tileSize, tileSize, tileSize),
                         GetVectorByXAndY(startExplosionPosition.X, startExplosionPosition.Y + i + 1));
 
-                        tempElementList.Add(mapTileAnimationElement);
+                        tempExplosionList.Add(ExplosionTile);
                     }
                     else
                     {
@@ -161,13 +173,13 @@ namespace SuperBomberman
                 }
                 else
                 {
-                    if (startExplosionPosition.Y + i < mapTiles.GetLength(1) && !mapTiles[startExplosionPosition.X, startExplosionPosition.Y + i + 1].IsSolid)
+                    if (startExplosionPosition.Y + i + 1 < mapTiles.GetLength(0) && !mapTiles[startExplosionPosition.Y + i + 1, startExplosionPosition.X].IsSolid)
                     {
-                        mapTileAnimationElement = new MapTileAnimationElement(
-                        new Rectangle(0, 2 * tileSize, tileSize, tileSize),
+                        ExplosionTile = new ExplosionTile(
+                        new Rectangle(4 * tileSize, 2 * tileSize, tileSize, tileSize),
                         GetVectorByXAndY(startExplosionPosition.X, startExplosionPosition.Y + i + 1));
 
-                        tempElementList.Add(mapTileAnimationElement);
+                        tempExplosionList.Add(ExplosionTile);
                     }
                     else
                     {
@@ -176,19 +188,20 @@ namespace SuperBomberman
                 }
             }
 
-            animationListTemp.MapTileAnimationElementList = tempElementList;
-            animationListTemp.EndAnimate += () => { explosionList.mapTilesAnimationList.Remove(animationListTemp); };
+            explosionTilesList.ExplosionTileList = tempExplosionList;
+            explosionTilesList.EndAnimate += () => { explosionList.ExplosionTilesList.Remove(explosionTilesList); };
 
-            explosionList.mapTilesAnimationList.Add(animationListTemp);
+            explosionList.ExplosionTilesList.Add(explosionTilesList);
         }
 
-        void MapGenerator(Vector2 position, int heightMap, int widthMap, int tileSize)
+        void MapGenerator(Vector2 position, int heightMap, int widthMap, int tileSize, string spritePathMap)
         {
             Position = position;
             this.tileSize = tileSize;
 
             Vector2 positionTemp = Vector2.Zero;
 
+            animatedWalls = new AnimatedMapTiles(spritePathMap, widthMap, heightMap, new List<int>(new int[] { 0, 1, 2, 3 }));
             mapTiles = new MapTile[heightMap, widthMap];
             for (int i = 0; i < heightMap; i++)
             {
@@ -244,6 +257,9 @@ namespace SuperBomberman
 
             positionTemp.X = 0;
             positionTemp.Y = 0;
+
+            animatedWalls.Add(1,3,tileSize,GetVectorByXAndY(1,3));
+            animatedWalls.Add(3, 3, tileSize, GetVectorByXAndY(3, 3));
         }
 
         public Vector2 GetVectorByXAndY(int x, int y)
@@ -264,101 +280,151 @@ namespace SuperBomberman
 
         public void LoadContent()
         {
-            Sprite.LoadContent();
+            Vector2 playerVector = GetVectorByXAndY(1, 1);
+            Point playerPoint = new Point((int)playerVector.X, (int)playerVector.Y);
+            Player player = new Player("Play/BombermanWhite3x", playerPoint, 48);
+            player.explosion = Explosion;
+            player.BombStandEvent += ((Vector2 position) =>
+            {
+                Point p = GetXAndYByVector(position);
+                return GetVectorByXAndY(p.X, p.Y);
+            });
+
+            entityList.Add(player);
+
+            foreach (Entity entity in entityList)
+            {
+                entity.LoadContent();
+            }
         }
 
         public void UnloadContent()
         {
-            Sprite.UnloadContent();
+
+            foreach (Entity entity in entityList)
+            {
+                entity.UnloadContent();
+            }
         }
 
-        public void Update(GameTime gameTime, ref Entity entity)
+        void Collision(ref Entity entity, ref MapTile tile)
+        {
+            if (tile.IsSolid)
+            {
+                Rectangle tileRect = new Rectangle((int)tile.Position.X, (int)tile.Position.Y, tile.SourceRectangle.Width, tile.SourceRectangle.Height);
+
+                if (entity.CollisionRectangle.Intersects(tileRect))
+                {
+                    Point tilePoint = GetXAndYByVector(tile.Position);
+                    Point entityPoint = GetXAndYByVector(new Vector2(entity.CollisionRectangle.X, entity.CollisionRectangle.Y));
+                    Vector2 correctVector = Vector2.Zero;
+
+                    if (entity.Velocity.X < 0)
+                    {
+                        entity.ChangePosition(new Point(tileRect.Right, entity.CollisionRectangle.Y));
+
+                        if (tilePoint.Y != entityPoint.Y && entityPoint.X - 1 >= 0 && !mapTiles[entityPoint.Y, entityPoint.X - 1].IsSolid)
+                        {
+                            entity.ChangePosition(GetVectorByXAndY(entityPoint.X, entityPoint.Y).ToPoint());
+                        }
+                    }
+                    else if (entity.Velocity.X > 0)
+                    {
+                        entity.ChangePosition(new Point(tileRect.Left - entity.CollisionRectangle.Width, entity.CollisionRectangle.Y));
+
+                        if (tilePoint.Y != entityPoint.Y && entityPoint.X + 1 < mapTiles.GetLength(1) && !mapTiles[entityPoint.Y, entityPoint.X + 1].IsSolid)
+                        {
+                            entity.ChangePosition(GetVectorByXAndY(entityPoint.X, entityPoint.Y).ToPoint());
+                        }
+                    }
+                    else if (entity.Velocity.Y < 0)
+                    {
+                        entity.ChangePosition(new Point(entity.CollisionRectangle.X, tileRect.Bottom));
+
+                        if (tilePoint.X != entityPoint.X && entityPoint.Y - 1 >= 0 && !mapTiles[entityPoint.Y - 1, entityPoint.X].IsSolid)
+                        {
+                            entity.ChangePosition(GetVectorByXAndY(entityPoint.X, entityPoint.Y).ToPoint());
+                        }
+                    }
+                    else if (entity.Velocity.Y > 0)
+                    {
+                        entity.ChangePosition(new Point(entity.CollisionRectangle.X, tileRect.Top - entity.CollisionRectangle.Height));
+
+                        if (tilePoint.X != entityPoint.X && entityPoint.Y + 1 < mapTiles.GetLength(0) && !mapTiles[entityPoint.Y + 1, entityPoint.X].IsSolid)
+                        {
+                            entity.ChangePosition(GetVectorByXAndY(entityPoint.X, entityPoint.Y).ToPoint());
+                        }
+                    }
+                    entity.ChangePosition(correctVector);
+                }
+            }
+        }
+
+
+        public void Update(GameTime gameTime)
         {
             if (InputManager.Instance.KeyPressed(Keys.Q))
             {
-                Explosion(GetVectorByXAndY(3,3), 2);
+                Explosion(GetVectorByXAndY(0, 0), 2);
             }
 
             if (InputManager.Instance.KeyPressed(Keys.W))
             {
-                Explosion(GetVectorByXAndY(1, 1), 2);
+                Explosion(GetVectorByXAndY(14, 12), 2);
             }
             if (InputManager.Instance.KeyPressed(Keys.E))
             {
-                Explosion(GetVectorByXAndY(3, 2), 2);
+                Explosion(GetVectorByXAndY(3, 5), 8);
             }
 
-            foreach (MapTile mapTile in mapTiles)
+
+            foreach (Entity e in entityList)
             {
-                mapTile.Update(gameTime, ref entity);
-
-                if (mapTile.IsSolid)
+                e.Update(gameTime);
+                Entity entity = e;
+                
+                foreach (MapTile mapTile in mapTiles)
                 {
-                    Rectangle tileRect = new Rectangle((int)mapTile.Position.X, (int)mapTile.Position.Y, mapTile.SourceRectangle.Width, mapTile.SourceRectangle.Height);
+                    mapTile.Update(gameTime);
+                    MapTile m = mapTile;
+                    Collision(ref entity, ref m);
+                }
 
-                    if (entity.CollisionRectangle.Intersects(tileRect))
+                foreach (MapTile mapTile in animatedWalls.mapTilesList)
+                {
+                    if (mapTile != null)
                     {
-                        Point tilePoint = GetXAndYByVector(mapTile.Position);
-                        Point entityPoint = GetXAndYByVector(new Vector2(entity.CollisionRectangle.X, entity.CollisionRectangle.Y));
-                        Vector2 correctVector = Vector2.Zero;
-
-                        if (entity.Velocity.X < 0)
-                        {
-                            entity.ChangePosition(new Point(tileRect.Right, entity.CollisionRectangle.Y));
-
-                            if (tilePoint.Y != entityPoint.Y && entityPoint.X - 1 >= 0 && !mapTiles[entityPoint.Y, entityPoint.X - 1].IsSolid)
-                            {
-                                entity.ChangePosition(GetVectorByXAndY(entityPoint.X, entityPoint.Y).ToPoint());
-                            }
-                        }
-                        else if (entity.Velocity.X > 0)
-                        {
-                            entity.ChangePosition(new Point(tileRect.Left - entity.CollisionRectangle.Width, entity.CollisionRectangle.Y));
-
-                            if (tilePoint.Y != entityPoint.Y && entityPoint.X + 1 < mapTiles.GetLength(1) && !mapTiles[entityPoint.Y, entityPoint.X + 1].IsSolid)
-                            {
-                                entity.ChangePosition(GetVectorByXAndY(entityPoint.X, entityPoint.Y).ToPoint());
-                            }
-                        }
-                        else if (entity.Velocity.Y < 0)
-                        {
-                            entity.ChangePosition(new Point(entity.CollisionRectangle.X, tileRect.Bottom));
-
-                            if (tilePoint.X != entityPoint.X && entityPoint.Y - 1 >= 0 && !mapTiles[entityPoint.Y - 1, entityPoint.X].IsSolid)
-                            {
-                                entity.ChangePosition(GetVectorByXAndY(entityPoint.X, entityPoint.Y).ToPoint());
-                            }
-                        }
-                        else if (entity.Velocity.Y > 0)
-                        {
-                            entity.ChangePosition(new Point(entity.CollisionRectangle.X, tileRect.Top - entity.CollisionRectangle.Height));
-
-                            if (tilePoint.X != entityPoint.X && entityPoint.Y + 1 < mapTiles.GetLength(0) && !mapTiles[entityPoint.Y + 1, entityPoint.X].IsSolid)
-                            {
-                                entity.ChangePosition(GetVectorByXAndY(entityPoint.X, entityPoint.Y).ToPoint());
-                            }
-                        }
-                        entity.ChangePosition(correctVector);
+                        mapTile.Update(gameTime);
+                        MapTile m = mapTile;
+                        Collision(ref entity, ref m);
                     }
                 }
             }
             explosionList.Update(gameTime);
+            animatedWalls.Update(gameTime);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             foreach (MapTile mapTile in mapTiles)
             {
-                spriteBatch.Draw(Sprite.Texture, mapTile.Position, mapTile.SourceRectangle, Color.White);
+                spriteBatch.Draw(sprite, mapTile.Position, mapTile.SourceRectangle, Color.White);
             }
+
             explosionList.Draw(spriteBatch);
 
+            foreach (Entity entity in entityList)
+            {
+                entity.Draw(spriteBatch);
+            }
+
+            animatedWalls.Draw(spriteBatch);
         }
     }
 
-    class MapTile
+    public class MapTile
     {
-        public Rectangle SourceRectangle { get; set; }
+        public Rectangle SourceRectangle;
         public Vector2 Position { get; set; }
         public bool IsDestructible { get; set; }
         public bool IsSolid { get; set; }
@@ -382,59 +448,133 @@ namespace SuperBomberman
             return positionOnMap;
         }
 
-        public void Update(GameTime gameTime, ref Entity entity)
+        public void Update(GameTime gameTime)
         {
 
         }
     }
 
-    public class MapTilesAnimation
-    {
-        Texture2D texture;
-        public List<MapTilesAnimationList> mapTilesAnimationList;
 
-        public MapTilesAnimation(string texturePath)
+    public class AnimatedMapTiles
+    {
+        Texture2D Texture;
+        public MapTile[,] mapTilesList;
+
+        public int CurrentFrame = 0;
+        int SwitchTime = 200;
+        int switchCounter = 0;
+        List<int> SequenceFrame = new List<int>();
+        bool IsAnimate = true;
+
+        public AnimatedMapTiles(string texturePath, int weight, int height, List<int> sequenceFrame)
         {
             ContentManager content = new ContentManager(ScreenManager.Instance.Content.ServiceProvider, "Content"); ;
-            texture = content.Load<Texture2D>(texturePath);
-            mapTilesAnimationList = new List<MapTilesAnimationList>();
+            Texture = content.Load<Texture2D>(texturePath);
+            SequenceFrame = sequenceFrame;
+            mapTilesList = new MapTile[height, weight];
+        }
+
+        public void Add(int x, int y, int tileSize, Vector2 position)
+        {
+            MapTile mapTileTemp = new MapTile(new Rectangle(0, 1 * tileSize, tileSize, tileSize), position, true, true);
+            mapTilesList[y, x] = mapTileTemp;
+        }
+
+        public void StartAnimation()
+        {
+            IsAnimate = true;
+        }
+
+        public void EndAnimation()
+        {
+            IsAnimate = false;
         }
 
         public void Update(GameTime gameTime)
         {
-            for (int i = 0; i < mapTilesAnimationList.Count; i++)
+            if (IsAnimate)
             {
-                mapTilesAnimationList[i].Update(gameTime);
+                switchCounter += (int)gameTime.ElapsedGameTime.Milliseconds;
+                if (switchCounter >= SwitchTime)
+                {
+                    switchCounter = 0;
+                    CurrentFrame++;
+
+                    if (CurrentFrame >= SequenceFrame.Count)
+                    {
+                        CurrentFrame = 0;
+                    }
+                }
+            }
+
+            for (int i = 0; i < mapTilesList.GetLength(0); i++)
+            {
+                for (int j = 0; j < mapTilesList.GetLength(1); j++)
+                {
+                    if (mapTilesList[i, j] != null)
+                        mapTilesList[i, j].SourceRectangle.X = SequenceFrame[CurrentFrame] * mapTilesList[i, j].SourceRectangle.Width;
+                }
             }
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            for (int i = 0; i < mapTilesAnimationList.Count; i++)
+            for (int i = 0; i < mapTilesList.GetLength(0); i++)
             {
-                mapTilesAnimationList[i].Draw(spriteBatch, ref texture);
+                for (int j = 0; j < mapTilesList.GetLength(1); j++)
+                {
+                    if (mapTilesList[i, j] != null)
+                        spriteBatch.Draw(Texture, mapTilesList[i, j].Position, mapTilesList[i, j].SourceRectangle, Color.White);
+                }
             }
         }
     }
 
-    public class MapTilesAnimationList
+    public class ExplosionTilesManager
     {
-        public List<MapTileAnimationElement> MapTileAnimationElementList;
+        Texture2D texture;
+        public List<ExplosionTilesList> ExplosionTilesList;
+
+        public ExplosionTilesManager(string texturePath)
+        {
+            ContentManager content = new ContentManager(ScreenManager.Instance.Content.ServiceProvider, "Content"); ;
+            texture = content.Load<Texture2D>(texturePath);
+            ExplosionTilesList = new List<ExplosionTilesList>();
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            for (int i = 0; i < ExplosionTilesList.Count; i++)
+            {
+                ExplosionTilesList[i].Update(gameTime);
+            }
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            for (int i = 0; i < ExplosionTilesList.Count; i++)
+            {
+                ExplosionTilesList[i].Draw(spriteBatch, ref texture);
+            }
+        }
+    }
+
+    public class ExplosionTilesList
+    {
+        public List<ExplosionTile> ExplosionTileList;
         bool IsAnimate = true;
 
-        bool loop = false;
 
         public int CurrentFrame = 0;
-        public int SwitchTime = 300;
+        public int SwitchTime = 50;
         int switchCounter = 0;
         public List<int> SequenceFrame = new List<int>();
 
         public event Action EndAnimate;
 
-        public MapTilesAnimationList()
+        public ExplosionTilesList()
         {
-            MapTileAnimationElementList = new List<MapTileAnimationElement>();
-            this.loop = loop;
+            ExplosionTileList = new List<ExplosionTile>();
         }
 
         public void StartAnimation()
@@ -460,27 +600,17 @@ namespace SuperBomberman
                 if (switchCounter >= SwitchTime)
                 {
                     switchCounter = 0;
-                    SwitchTime = 100;
-
-
                     CurrentFrame++;
 
                     if (CurrentFrame >= SequenceFrame.Count)
                     {
-                        if (loop)
-                        {
-                            CurrentFrame = 0;
-                        }
-                        else
-                        {
-                            EndAnimate();
-                            CurrentFrame = 0;
-                        }
+                        EndAnimate();
+                        CurrentFrame = 0;
                     }
 
-                    for (int i = 0; i < MapTileAnimationElementList.Count; i++)
+                    for (int i = 0; i < ExplosionTileList.Count; i++)
                     {
-                        MapTileAnimationElementList[i].SourceRectangle.X = SequenceFrame[CurrentFrame] * MapTileAnimationElementList[i].SourceRectangle.Width;
+                        ExplosionTileList[i].SourceRectangle.X = SequenceFrame[CurrentFrame] * ExplosionTileList[i].SourceRectangle.Width;
                     }
 
                 }
@@ -490,24 +620,24 @@ namespace SuperBomberman
 
         public void Draw(SpriteBatch spriteBatch, ref Texture2D texture)
         {
-            for (int i = 0; i < MapTileAnimationElementList.Count; i++)
+            for (int i = 0; i < ExplosionTileList.Count; i++)
             {
-                spriteBatch.Draw(texture, MapTileAnimationElementList[i].Position, MapTileAnimationElementList[i].SourceRectangle, Color.White);
-
+                spriteBatch.Draw(texture, ExplosionTileList[i].Position, ExplosionTileList[i].SourceRectangle, Color.White);
             }
         }
 
 
     }
 
-    public class MapTileAnimationElement
+    public class ExplosionTile
     {
 
         public Rectangle SourceRectangle;
         public Vector2 Position { get; set; }
 
 
-        public MapTileAnimationElement(Rectangle sourceRectangles, Vector2 position)
+
+        public ExplosionTile(Rectangle sourceRectangles, Vector2 position)
         {
             SourceRectangle = sourceRectangles;
             Position = position;

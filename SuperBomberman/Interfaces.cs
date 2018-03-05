@@ -34,4 +34,11 @@ namespace SuperBomberman
     {
 
     }
+
+    interface ITile
+    {
+        Vector2 Position { get; set; }
+        bool IsDestructible { get; }
+        bool IsSolid { get; }
+    }
 }
