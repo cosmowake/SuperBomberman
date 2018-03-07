@@ -47,7 +47,7 @@ namespace SuperBomberman
             List<ExplosionTile> tempExplosionList = new List<ExplosionTile>();
 
             ExplosionTile ExplosionTile = new ExplosionTile(
-                new Rectangle(0, 1 * tileSize, tileSize, tileSize),
+                new Rectangle(0, 0 * tileSize, tileSize, tileSize),
                 GetVectorByXAndY(startExplosionPosition.X, startExplosionPosition.Y));
 
             tempExplosionList.Add(ExplosionTile);
@@ -57,99 +57,41 @@ namespace SuperBomberman
             {
                 if (i == power - 1)
                 {
-                    if (startExplosionPosition.X - i - 1 >= 0 && !mapTiles[startExplosionPosition.Y, startExplosionPosition.X - i - 1].IsSolid)
-                    {
-                        ExplosionTile = new ExplosionTile(
-                        new Rectangle(4 * tileSize, 7 * tileSize, tileSize, tileSize),
-                        GetVectorByXAndY(startExplosionPosition.X - i - 1, startExplosionPosition.Y));
-
-                        tempExplosionList.Add(ExplosionTile);
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-                else
-                {
-                    if (startExplosionPosition.X - i - 1 >= 0 && !mapTiles[startExplosionPosition.Y, startExplosionPosition.X - i - 1].IsSolid)
-                    {
-                        ExplosionTile = new ExplosionTile(
-                        new Rectangle(4 * tileSize, 3 * tileSize, tileSize, tileSize),
-                        GetVectorByXAndY(startExplosionPosition.X - i - 1, startExplosionPosition.Y));
-
-                        tempExplosionList.Add(ExplosionTile);
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-            for (int i = 0; i < power; i++)
-            {
-                if (i == power - 1)
-                {
-                    if (startExplosionPosition.X + i + 1 < mapTiles.GetLength(0) && !mapTiles[startExplosionPosition.Y, startExplosionPosition.X + i + 1].IsSolid)
+                    if (startExplosionPosition.X - i - 1 >= 0 && !mapTiles[startExplosionPosition.Y, startExplosionPosition.X - i - 1].IsSolid && (animatedWalls.mapTilesList[startExplosionPosition.Y, startExplosionPosition.X - i - 1] == null || !animatedWalls.mapTilesList[startExplosionPosition.Y, startExplosionPosition.X - i - 1].IsSolid))
                     {
                         ExplosionTile = new ExplosionTile(
                         new Rectangle(4 * tileSize, 6 * tileSize, tileSize, tileSize),
-                        GetVectorByXAndY(startExplosionPosition.X + i + 1, startExplosionPosition.Y));
+                        GetVectorByXAndY(startExplosionPosition.X - i - 1, startExplosionPosition.Y));
 
                         tempExplosionList.Add(ExplosionTile);
                     }
                     else
                     {
+                        if (animatedWalls.mapTilesList[startExplosionPosition.Y, startExplosionPosition.X - i - 1] != null)
+                        {
+                            Console.WriteLine(String.Format("X: {0}, Y: {1}", startExplosionPosition.X - i - 1, startExplosionPosition.Y));
+                            animatedWalls.mapTilesList[startExplosionPosition.Y, startExplosionPosition.X - i - 1] = null;
+                        }
                         break;
                     }
                 }
                 else
                 {
-                    if (startExplosionPosition.X + i + 1 < mapTiles.GetLength(0) && !mapTiles[startExplosionPosition.Y, startExplosionPosition.X + i + 1].IsSolid)
-                    {
-                        ExplosionTile = new ExplosionTile(
-                        new Rectangle(4 * tileSize, 3 * tileSize, tileSize, tileSize),
-                        GetVectorByXAndY(startExplosionPosition.X + i + 1, startExplosionPosition.Y));
-
-                        tempExplosionList.Add(ExplosionTile);
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-
-
-            for (int i = 0; i < power; i++)
-            {
-                if (i == power - 1)
-                {
-                    if (startExplosionPosition.Y - i - 1 >= 0 && !mapTiles[startExplosionPosition.Y - i - 1, startExplosionPosition.X].IsSolid)
-                    {
-                        ExplosionTile = new ExplosionTile(
-                        new Rectangle(4 * tileSize, 4 * tileSize, tileSize, tileSize),
-                        GetVectorByXAndY(startExplosionPosition.X, startExplosionPosition.Y - i - 1));
-
-                        tempExplosionList.Add(ExplosionTile);
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-                else
-                {
-                    if (startExplosionPosition.Y - i - 1 >= 0 && !mapTiles[startExplosionPosition.Y - i - 1, startExplosionPosition.X].IsSolid)
+                    if (startExplosionPosition.X - i - 1 >= 0 && !mapTiles[startExplosionPosition.Y, startExplosionPosition.X - i - 1].IsSolid && (animatedWalls.mapTilesList[startExplosionPosition.Y, startExplosionPosition.X - i - 1] == null || !animatedWalls.mapTilesList[startExplosionPosition.Y, startExplosionPosition.X - i - 1].IsSolid))
                     {
                         ExplosionTile = new ExplosionTile(
                         new Rectangle(4 * tileSize, 2 * tileSize, tileSize, tileSize),
-                        GetVectorByXAndY(startExplosionPosition.X, startExplosionPosition.Y - i - 1));
+                        GetVectorByXAndY(startExplosionPosition.X - i - 1, startExplosionPosition.Y));
 
                         tempExplosionList.Add(ExplosionTile);
                     }
                     else
                     {
+                        if (animatedWalls.mapTilesList[startExplosionPosition.Y, startExplosionPosition.X - i - 1] != null)
+                        {
+                            Console.WriteLine(String.Format("X: {0}, Y: {1}", startExplosionPosition.X - i - 1, startExplosionPosition.Y));
+                            animatedWalls.mapTilesList[startExplosionPosition.Y, startExplosionPosition.X - i - 1] = null;
+                        }
                         break;
                     }
                 }
@@ -158,31 +100,129 @@ namespace SuperBomberman
             {
                 if (i == power - 1)
                 {
-                    if (startExplosionPosition.Y + i + 1 < mapTiles.GetLength(0) && !mapTiles[startExplosionPosition.Y + i + 1, startExplosionPosition.X].IsSolid)
+                    if (startExplosionPosition.X + i + 1 < mapTiles.GetLength(0) && !mapTiles[startExplosionPosition.Y, startExplosionPosition.X + i + 1].IsSolid && (animatedWalls.mapTilesList[startExplosionPosition.Y, startExplosionPosition.X + i + 1] == null || !animatedWalls.mapTilesList[startExplosionPosition.Y, startExplosionPosition.X + i + 1].IsSolid))
                     {
                         ExplosionTile = new ExplosionTile(
                         new Rectangle(4 * tileSize, 5 * tileSize, tileSize, tileSize),
-                        GetVectorByXAndY(startExplosionPosition.X, startExplosionPosition.Y + i + 1));
+                        GetVectorByXAndY(startExplosionPosition.X + i + 1, startExplosionPosition.Y));
 
                         tempExplosionList.Add(ExplosionTile);
                     }
                     else
                     {
+                        if (animatedWalls.mapTilesList[startExplosionPosition.Y, startExplosionPosition.X + i + 1] != null)
+                        {
+                            Console.WriteLine(String.Format("X: {0}, Y: {1}", startExplosionPosition.X + i + 1, startExplosionPosition.Y));
+                            animatedWalls.mapTilesList[startExplosionPosition.Y, startExplosionPosition.X + i + 1] = null;
+                        }
                         break;
                     }
                 }
                 else
                 {
-                    if (startExplosionPosition.Y + i + 1 < mapTiles.GetLength(0) && !mapTiles[startExplosionPosition.Y + i + 1, startExplosionPosition.X].IsSolid)
+                    if (startExplosionPosition.X + i + 1 < mapTiles.GetLength(0) && !mapTiles[startExplosionPosition.Y, startExplosionPosition.X + i + 1].IsSolid && (animatedWalls.mapTilesList[startExplosionPosition.Y, startExplosionPosition.X + i + 1] == null || !animatedWalls.mapTilesList[startExplosionPosition.Y, startExplosionPosition.X + i + 1].IsSolid))
                     {
                         ExplosionTile = new ExplosionTile(
                         new Rectangle(4 * tileSize, 2 * tileSize, tileSize, tileSize),
+                        GetVectorByXAndY(startExplosionPosition.X + i + 1, startExplosionPosition.Y));
+
+                        tempExplosionList.Add(ExplosionTile);
+                    }
+                    else
+                    {
+                        if (animatedWalls.mapTilesList[startExplosionPosition.Y, startExplosionPosition.X + i + 1] != null)
+                        {
+                            Console.WriteLine(String.Format("X: {0}, Y: {1}", startExplosionPosition.X + i + 1, startExplosionPosition.Y));
+                            animatedWalls.mapTilesList[startExplosionPosition.Y, startExplosionPosition.X + i + 1] = null;
+                        }
+                        break;
+                    }
+                }
+            }
+
+
+            for (int i = 0; i < power; i++)
+            {
+                if (i == power - 1)
+                {
+                    if (startExplosionPosition.Y - i - 1 >= 0 && !mapTiles[startExplosionPosition.Y - i - 1, startExplosionPosition.X].IsSolid && (animatedWalls.mapTilesList[startExplosionPosition.Y - 1 - i, startExplosionPosition.X] == null || !animatedWalls.mapTilesList[startExplosionPosition.Y - i - 1, startExplosionPosition.X].IsSolid))
+                    {
+                        ExplosionTile = new ExplosionTile(
+                        new Rectangle(4 * tileSize, 3 * tileSize, tileSize, tileSize),
+                        GetVectorByXAndY(startExplosionPosition.X, startExplosionPosition.Y - i - 1));
+
+                        tempExplosionList.Add(ExplosionTile);
+                    }
+                    else
+                    {
+                        if (animatedWalls.mapTilesList[startExplosionPosition.Y - 1 - i, startExplosionPosition.X] != null)
+                        {
+                            Console.WriteLine(String.Format("X: {0}, Y: {1}", startExplosionPosition.X, startExplosionPosition.Y - 1 - i));
+                            animatedWalls.mapTilesList[startExplosionPosition.Y - 1 - i, startExplosionPosition.X] = null;
+                        }
+                        break;
+                    }
+                }
+                else
+                {
+                    if (startExplosionPosition.Y - i - 1 >= 0 && !mapTiles[startExplosionPosition.Y - i - 1, startExplosionPosition.X].IsSolid && (animatedWalls.mapTilesList[startExplosionPosition.Y - i - 1, startExplosionPosition.X] == null || !animatedWalls.mapTilesList[startExplosionPosition.Y - i - 1, startExplosionPosition.X].IsSolid))
+                    {
+                        ExplosionTile = new ExplosionTile(
+                        new Rectangle(4 * tileSize, 1 * tileSize, tileSize, tileSize),
+                        GetVectorByXAndY(startExplosionPosition.X, startExplosionPosition.Y - i - 1));
+
+                        tempExplosionList.Add(ExplosionTile);
+                    }
+                    else
+                    {
+                        if (animatedWalls.mapTilesList[startExplosionPosition.Y - 1 - i, startExplosionPosition.X] != null)
+                        {
+                            Console.WriteLine(String.Format("X: {0}, Y: {1}", startExplosionPosition.X, startExplosionPosition.Y - 1 - i));
+                            animatedWalls.mapTilesList[startExplosionPosition.Y - 1 - i, startExplosionPosition.X] = null;
+                        }
+                        break;
+                    }
+                }
+            }
+            for (int i = 0; i < power; i++)
+            {
+                if (i == power - 1)
+                {
+                    if (startExplosionPosition.Y + i + 1 < mapTiles.GetLength(0) && !mapTiles[startExplosionPosition.Y + i + 1, startExplosionPosition.X].IsSolid && (animatedWalls.mapTilesList[startExplosionPosition.Y + i + 1, startExplosionPosition.X] == null || !animatedWalls.mapTilesList[startExplosionPosition.Y + i + 1, startExplosionPosition.X].IsSolid))
+                    {
+                        ExplosionTile = new ExplosionTile(
+                        new Rectangle(4 * tileSize, 4 * tileSize, tileSize, tileSize),
                         GetVectorByXAndY(startExplosionPosition.X, startExplosionPosition.Y + i + 1));
 
                         tempExplosionList.Add(ExplosionTile);
                     }
                     else
                     {
+                        if (animatedWalls.mapTilesList[startExplosionPosition.Y + i + 1, startExplosionPosition.X] != null)
+                        {
+                            Console.WriteLine(String.Format("X: {0}, Y: {1}", startExplosionPosition.X, startExplosionPosition.Y + i + 1));
+                            animatedWalls.mapTilesList[startExplosionPosition.Y + i + 1, startExplosionPosition.X] = null;
+                        }
+                        break;
+                    }
+                }
+                else
+                {
+                    if (startExplosionPosition.Y + i + 1 < mapTiles.GetLength(0) && !mapTiles[startExplosionPosition.Y + i + 1, startExplosionPosition.X].IsSolid && (animatedWalls.mapTilesList[startExplosionPosition.Y + i + 1, startExplosionPosition.X] == null || !animatedWalls.mapTilesList[startExplosionPosition.Y + i + 1, startExplosionPosition.X].IsSolid))
+                    {
+                        ExplosionTile = new ExplosionTile(
+                        new Rectangle(4 * tileSize, 1 * tileSize, tileSize, tileSize),
+                        GetVectorByXAndY(startExplosionPosition.X, startExplosionPosition.Y + i + 1));
+
+                        tempExplosionList.Add(ExplosionTile);
+                    }
+                    else
+                    {
+                        if (animatedWalls.mapTilesList[startExplosionPosition.Y + i + 1, startExplosionPosition.X] != null)
+                        {
+                            Console.WriteLine(String.Format("X: {0}, Y: {1}", startExplosionPosition.X, startExplosionPosition.Y + i + 1));
+                            animatedWalls.mapTilesList[startExplosionPosition.Y + i + 1, startExplosionPosition.X] = null;
+                        }
                         break;
                     }
                 }
@@ -258,7 +298,7 @@ namespace SuperBomberman
             positionTemp.X = 0;
             positionTemp.Y = 0;
 
-            animatedWalls.Add(1,3,tileSize,GetVectorByXAndY(1,3));
+            animatedWalls.Add(1, 3, tileSize, GetVectorByXAndY(1, 3));
             animatedWalls.Add(3, 3, tileSize, GetVectorByXAndY(3, 3));
         }
 
@@ -365,7 +405,7 @@ namespace SuperBomberman
         {
             if (InputManager.Instance.KeyPressed(Keys.Q))
             {
-                Explosion(GetVectorByXAndY(0, 0), 2);
+                Explosion(GetVectorByXAndY(5, 3), 3);
             }
 
             if (InputManager.Instance.KeyPressed(Keys.W))
@@ -382,7 +422,7 @@ namespace SuperBomberman
             {
                 e.Update(gameTime);
                 Entity entity = e;
-                
+
                 foreach (MapTile mapTile in mapTiles)
                 {
                     mapTile.Update(gameTime);

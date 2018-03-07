@@ -20,7 +20,7 @@ namespace SuperBomberman
         {
             base.LoadContent();
 
-            map = new Map("Play/MapTile1_3x","Play/Bomb3x");
+            map = new Map("Play/MapTile1_3x","Play/Explosion3x");
             map.LoadContent();
 
             
