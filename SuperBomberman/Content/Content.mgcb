@@ -68,7 +68,7 @@
 /processorParam:TextureFormat=Color
 /build:Play/MapTile1_3x.png
 
-#begin Play/omb1x.png
+#begin Play/Bomb3x.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -78,5 +78,5 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Play/omb1x.png
+/build:Play/Bomb3x.png
 
