@@ -21,7 +21,7 @@ namespace SuperBomberman
         public bool IsSolid { get; private set; }
         public bool IsSolidForPlayer { get; private set; }
 
-        public event Action ExplosionBomb;
+        public Action ExplosionBomb;
 
         DelayedAction explosionDelayed;
 

@@ -20,7 +20,11 @@ namespace SuperBomberman
         protected int tileSize;
 
         public Rectangle CollisionRectangle;
-        
+        public Vector2 Position { get { return new Vector2(CollisionRectangle.X, CollisionRectangle.Y); } }
+
+        public Action Death;
+
+        public bool CanMove = true;
 
         public virtual void LoadContent()
         {

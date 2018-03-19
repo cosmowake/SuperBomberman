@@ -13,12 +13,12 @@ namespace SuperBomberman
 {
     class Player : Entity
     {
-        List<Bomb> bombList = new List<Bomb>();
+        public List<Bomb> bombList = new List<Bomb>();
         int bombMaxCount = 2;
         int power = 1;
 
         public delegate Vector2 BombStand(Vector2 position);
-        public event BombStand BombStandEvent;
+        public BombStand BombStandDel;
 
         public delegate void Explosion(Vector2 pos, int power);
         public Explosion explosion;
@@ -93,13 +93,13 @@ namespace SuperBomberman
             {
                 if (bombMaxCount > bombList.Count)
                 { 
-                    Vector2 position = BombStandEvent(new Vector2(CollisionRectangle.X,CollisionRectangle.Y));
+                    Vector2 position = BombStandDel(new Vector2(CollisionRectangle.X,CollisionRectangle.Y));
 
                     Bomb bomb = new Bomb("Play/Bomb3x", position, 48);
                     bomb.ExplosionBomb += () =>
                     {
-                        explosion(bomb.Position, power);
                         bombList.Remove(bomb);
+                        explosion(bomb.Position, power);
                         bomb.UnloadContent();
                     };
                     bomb.LoadContent();
@@ -134,9 +134,11 @@ namespace SuperBomberman
         {
             base.Update(gameTime);
 
-            MoveUpdate(gameTime);
-            BombUpdate(gameTime);
-
+            if (CanMove)
+            { 
+                MoveUpdate(gameTime);
+                BombUpdate(gameTime);
+            }
             Player p = this;
 
             for (int i = 0;i < bombList.Count ;i++)
