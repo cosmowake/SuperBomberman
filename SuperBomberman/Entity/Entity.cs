@@ -15,16 +15,19 @@ namespace SuperBomberman
     {
         public AnimationImage Image;
         public Vector2 Velocity;
-        public float MoveSpeed {  get; protected set; }
+        public float MoveSpeed { get; protected set; }
 
         protected int tileSize;
 
         public Rectangle CollisionRectangle;
         public Vector2 Position { get { return new Vector2(CollisionRectangle.X, CollisionRectangle.Y); } }
 
-        public Action Death;
+        public Action Hit;
 
+        public bool IsInvulnerable = false;
+        int InvulnerableSwitchTime = 50;
         public bool CanMove = true;
+        public bool isDead = false;
 
         public virtual void LoadContent()
         {
@@ -38,6 +41,22 @@ namespace SuperBomberman
 
         public virtual void Update(GameTime gameTime)
         {
+            if (IsInvulnerable) { 
+            InvulnerableSwitchTime -= gameTime.ElapsedGameTime.Milliseconds;
+            if (InvulnerableSwitchTime <= 0)
+            {
+                InvulnerableSwitchTime = 50;
+                if (Image.image.Color == Color.White)
+                {
+                    Image.image.Color = new Color(Color.White,0);
+                }
+                else if(Image.image.Color == new Color(Color.White, 0))
+                {
+                    Image.image.Color = Color.White;
+                }
+            }
+            }
+
             Image.Update(gameTime);
         }
 

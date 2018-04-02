@@ -19,7 +19,7 @@ namespace SuperBomberman
         int switchCounter = 0;
         public List<int> SequenceFrame = new List<int>();
         bool IsAnimate = false;
-
+        public bool IsLoop = false;
         public void StartAnimation()
         {
             IsAnimate = true;
@@ -58,28 +58,43 @@ namespace SuperBomberman
         public void Update(GameTime gameTime)
         {
             image.Update(gameTime);
-
-            if (IsAnimate)
+            if (!IsLoop)
             {
-                switchCounter += (int)gameTime.ElapsedGameTime.Milliseconds;
-                if (switchCounter >= SwitchTime)
+                if (IsAnimate)
                 {
-                    switchCounter = 0;
-                    CurrentFrame++;
-
-                    if (CurrentFrame >= SequenceFrame.Count)
+                    switchCounter += (int)gameTime.ElapsedGameTime.Milliseconds;
+                    if (switchCounter >= SwitchTime)
                     {
-                        CurrentFrame = 0;
+                        switchCounter = 0;
+                        CurrentFrame++;
+
+                        if (CurrentFrame >= SequenceFrame.Count)
+                        {
+                            CurrentFrame = 0;
+                        }
                     }
+                }
+                else
+                {
+                    CurrentFrame = 0;
                 }
             }
             else
             {
-                CurrentFrame = 0;
+                if (IsAnimate)
+                {
+                    switchCounter += (int)gameTime.ElapsedGameTime.Milliseconds;
+                    if (switchCounter >= SwitchTime)
+                    {
+                        if (CurrentFrame < SequenceFrame.Count - 1)
+                        {
+                            switchCounter = 0;
+                            CurrentFrame++;
+                        }
+                    }
+                }
             }
-
             image.SourceRectangle.X = (SequenceFrame[CurrentFrame] * image.SourceRectangle.Width);
-            
         }
 
         public void Draw(SpriteBatch spriteBatch)

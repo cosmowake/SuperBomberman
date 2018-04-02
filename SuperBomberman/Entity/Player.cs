@@ -14,8 +14,8 @@ namespace SuperBomberman
     class Player : Entity
     {
         public List<Bomb> bombList = new List<Bomb>();
-        int bombMaxCount = 2;
-        int power = 1;
+        int bombMaxCount = 4;
+        int power = 2;
 
         public delegate Vector2 BombStand(Vector2 position);
         public BombStand BombStandDel;
@@ -23,17 +23,17 @@ namespace SuperBomberman
         public delegate void Explosion(Vector2 pos, int power);
         public Explosion explosion;
 
-        public Player(string spritePath,Point startPoint, int tileSize)
+        public Player(string spritePath, Point startPoint, int tileSize)
         {
             MoveSpeed = 150.0f;
-
+            IsInvulnerable = false;
             this.tileSize = tileSize;
 
             CollisionRectangle = new Rectangle(startPoint.X, startPoint.Y, tileSize, tileSize);
 
             Image imageTemp = new Image(spritePath, new Rectangle(0, 0, tileSize, (int)(tileSize * 1.5)), new Vector2(startPoint.X, startPoint.Y - (int)(tileSize * 0.5)));
             Image = new AnimationImage(imageTemp, new List<int>(new int[4] { 0, 1, 0, 2 }));
-            
+
         }
 
         void MoveUpdate(GameTime gameTime)
@@ -56,7 +56,8 @@ namespace SuperBomberman
                 else
                 {
                     Velocity.Y = 0;
-                    Image.EndAnimation();
+                    if (!isDead)
+                        Image.EndAnimation();
                 }
             }
 
@@ -77,13 +78,14 @@ namespace SuperBomberman
                 else
                 {
                     Velocity.X = 0;
-                    Image.EndAnimation();
+                    if (!isDead)
+                        Image.EndAnimation();
                 }
             }
 
 
             ChangePosition(Velocity);
-            
+
 
         }
 
@@ -92,8 +94,8 @@ namespace SuperBomberman
             if (InputManager.Instance.KeyPressed(Keys.Space))
             {
                 if (bombMaxCount > bombList.Count)
-                { 
-                    Vector2 position = BombStandDel(new Vector2(CollisionRectangle.X,CollisionRectangle.Y));
+                {
+                    Vector2 position = BombStandDel(new Vector2(CollisionRectangle.X, CollisionRectangle.Y));
 
                     Bomb bomb = new Bomb("Play/Bomb3x", position, 48);
                     bomb.ExplosionBomb += () =>
@@ -135,15 +137,16 @@ namespace SuperBomberman
             base.Update(gameTime);
 
             if (CanMove)
-            { 
+            {
                 MoveUpdate(gameTime);
                 BombUpdate(gameTime);
             }
+
             Player p = this;
 
-            for (int i = 0;i < bombList.Count ;i++)
+            for (int i = 0; i < bombList.Count; i++)
             {
-                bombList[i].Update(gameTime, ref p);
+                bombList[i].Update(gameTime);
             }
         }
 
@@ -156,6 +159,6 @@ namespace SuperBomberman
 
             base.Draw(spriteBatch);
         }
-        
+
     }
 }
