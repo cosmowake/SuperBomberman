@@ -14,8 +14,8 @@ namespace SuperBomberman
     class Player : Entity
     {
         public List<Bomb> bombList = new List<Bomb>();
-        int bombMaxCount = 4;
-        int power = 2;
+        public int bombMaxCount = 1;
+        public int power = 1;
 
         public delegate Vector2 BombStand(Vector2 position);
         public BombStand BombStandDel;
