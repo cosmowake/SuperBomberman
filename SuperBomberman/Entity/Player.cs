@@ -23,6 +23,8 @@ namespace SuperBomberman
         public delegate void Explosion(Vector2 pos, int power);
         public Explosion explosion;
 
+        public DelayedAction afterDeath;
+
         public Player(string spritePath, Point startPoint, int tileSize)
         {
             MoveSpeed = 150.0f;
@@ -35,6 +37,7 @@ namespace SuperBomberman
             Image = new AnimationImage(imageTemp, new List<int>(new int[4] { 0, 1, 0, 2 }));
 
         }
+
 
         void MoveUpdate(GameTime gameTime)
         {
@@ -148,6 +151,9 @@ namespace SuperBomberman
             {
                 bombList[i].Update(gameTime);
             }
+
+            if (afterDeath != null)
+                afterDeath.Update(gameTime.ElapsedGameTime.Milliseconds);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
