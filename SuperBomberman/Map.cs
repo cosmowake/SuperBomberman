@@ -530,6 +530,15 @@ namespace SuperBomberman
             };
             bonusList.Add(bonus2);
 
+            Bonus bonus3 = new Bonus(BonusType.Detonator, GetVectorByXAndY(1, 3), tileSize);
+            bonus3.Destroy = () =>
+            {
+                bonusList.Remove(bonus3);
+                bonus3.UnloadContent();
+                bonus3 = null;
+            };
+            bonusList.Add(bonus3);
+
             foreach (Bonus b in bonusList)
             {
                 b.LoadContent();
@@ -597,7 +606,7 @@ namespace SuperBomberman
                 Point p = GetXAndYByVector(position);
                 return GetVectorByXAndY(p.X, p.Y);
             });
-
+            player.InvulnerableOn(8000);
             player.Hit = (() =>
             {
                 player.Image.IsLoop = true;
@@ -611,6 +620,7 @@ namespace SuperBomberman
                     player.ChangePosition(GetVectorByXAndY(1, 1).ToPoint());
                     player.Image.ChangeAnimation(0, new List<int>(new int[] { 0, 1, 0, 2 }));
                     player.Image.IsLoop = false;
+                    player.InvulnerableOn(5000);
                     player.CanMove = true;
                     player.isDead = false;
                 }, 3000);
@@ -835,7 +845,7 @@ namespace SuperBomberman
 
                         if (player.CollisionRectangle.Intersects(tileRect) && (GetXAndYByVector(player.Position) == GetXAndYByVector(m.Position)))
                         {
-                            if (!player.isDead)
+                            if (!player.isDead && !player.IsInvulnerable)
                                 player.Hit();
                         }
                     }
@@ -866,7 +876,7 @@ namespace SuperBomberman
 
                 foreach (Player p in playerList)
                 {
-                    if (!p.isDead)
+                    if (!p.isDead && !p.IsInvulnerable)
                     { 
                         if (enemy.CollisionRectangle.Intersects(p.CollisionRectangle) && (GetXAndYByVector(enemy.Position) == GetXAndYByVector(p.Position)))
                         {
@@ -892,18 +902,20 @@ namespace SuperBomberman
 
                 foreach (AnimationNoLoopTilesList mapTileList in explosionList.AnimationNoLoopTilesList)
                 {
-                    foreach (MapTile mapTile in mapTileList.AnimationNoLoopTileList)
-                    {
-                        MapTile m = mapTile;
-
-                        Collision(ref enemy, ref m);
-
-                        Rectangle tileRect = new Rectangle((int)mapTile.Position.X, (int)mapTile.Position.Y, mapTile.SourceRectangle.Width, mapTile.SourceRectangle.Height);
-                        if (enemy.CollisionRectangle.Intersects(tileRect) && (GetXAndYByVector(enemy.Position) == GetXAndYByVector(m.Position)))
+                    if (!enemy.IsInvulnerable) {
+                        foreach (MapTile mapTile in mapTileList.AnimationNoLoopTileList)
                         {
-                            Vector2 pos = enemy.Position;
-                            enemy.Hit();
-                            DestroyEnemyAndBonus(pos);
+                            MapTile m = mapTile;
+
+                            Collision(ref enemy, ref m);
+
+                            Rectangle tileRect = new Rectangle((int)mapTile.Position.X, (int)mapTile.Position.Y, mapTile.SourceRectangle.Width, mapTile.SourceRectangle.Height);
+                            if (enemy.CollisionRectangle.Intersects(tileRect) && (GetXAndYByVector(enemy.Position) == GetXAndYByVector(m.Position)))
+                            {
+                                Vector2 pos = enemy.Position;
+                                enemy.Hit();
+                                DestroyEnemyAndBonus(pos);
+                            }
                         }
                     }
                 }
@@ -967,12 +979,19 @@ namespace SuperBomberman
                 teleport.Draw(spriteBatch);
             }
 
-            explosionList.Draw(spriteBatch);
 
-            animatedWalls.Draw(spriteBatch);
             destroyEnemyAndBonus.Draw(spriteBatch);
             destroyWalls.Draw(spriteBatch);
+            animatedWalls.Draw(spriteBatch);
+            explosionList.Draw(spriteBatch);
 
+            foreach(Player p in playerList)
+            {
+                foreach (Bomb bomb in p.bombList)
+                {
+                    bomb.Draw(spriteBatch);
+                }
+            }
 
             for (int i = 0; i < enemyList.Count; i++)
             {

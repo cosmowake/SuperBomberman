@@ -14,6 +14,7 @@ namespace SuperBomberman
     {
         AnimationImage animationImage;
         public int Power { get; private set; }
+        public bool IsDetonatorBomb;
         Rectangle collisionRectangle;
         public Vector2 Position { get { return new Vector2(collisionRectangle.X, collisionRectangle.Y); } }
 
@@ -24,12 +25,21 @@ namespace SuperBomberman
 
         DelayedAction explosionDelayed;
         public DelayedAction explosionAfterDelayed;
-        public Bomb(string spritePath, Vector2 position, int tileSize)
+        public Bomb(string spritePath, Vector2 position, int tileSize, bool isDetonatorBomb)
         {
             if (animationImage == null)
             {
-                Image imageTemp = new Image(spritePath, new Rectangle(0, 0, tileSize, tileSize), position);
-                animationImage = new AnimationImage(imageTemp, new List<int>(new int[4] { 0, 1, 2, 1 }));
+                IsDetonatorBomb = isDetonatorBomb;
+                if (!IsDetonatorBomb)
+                {
+                    Image imageTemp = new Image(spritePath, new Rectangle(0, 0, tileSize, tileSize), position);
+                    animationImage = new AnimationImage(imageTemp, new List<int>(new int[] { 0, 1, 2, 1 }));
+                }
+                else
+                {
+                    Image imageTemp = new Image(spritePath, new Rectangle(0, 1 * tileSize, tileSize, tileSize), position);
+                    animationImage = new AnimationImage(imageTemp, new List<int>(new int[] { 0, 1}));
+                }
                 collisionRectangle = new Rectangle((int)position.X, (int)position.Y, tileSize, tileSize);
 
                 IsDestructible = true;
@@ -45,19 +55,26 @@ namespace SuperBomberman
                 }),
                 100);
 
-            explosionDelayed = new DelayedAction(
-                new Action(() =>
-                {
-                    explosionAfterDelayed.Start();
-                }),
-                3000);
+            if (!IsDetonatorBomb)
+            {
+
+                explosionDelayed = new DelayedAction(
+                    new Action(() =>
+                    {
+                        explosionAfterDelayed.Start();
+                    }),
+                    3000);
+            }
         }
 
         public void LoadContent()
         {
             animationImage.LoadContent();
             animationImage.StartAnimation();
-            explosionDelayed.Start();
+            if (explosionDelayed != null)
+            {
+                explosionDelayed.Start();
+            }
         }
 
         public void UnloadContent()
@@ -67,8 +84,11 @@ namespace SuperBomberman
 
         public void Update(GameTime gameTime)
         {
-            animationImage.Update(gameTime);
-            explosionDelayed.Update(gameTime.ElapsedGameTime.Milliseconds);
+            animationImage.Update(gameTime); 
+            if (explosionDelayed != null)
+            {
+                explosionDelayed.Update(gameTime.ElapsedGameTime.Milliseconds);
+            }
             explosionAfterDelayed.Update(gameTime.ElapsedGameTime.Milliseconds);
         }
 

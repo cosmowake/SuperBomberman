@@ -24,6 +24,7 @@ namespace SuperBomberman
 
         public Action Hit;
 
+        DelayedAction DelayedInvulnerable = null;
         public bool IsInvulnerable = false;
         int InvulnerableSwitchTime = 50;
         public bool CanMove = true;
@@ -41,20 +42,29 @@ namespace SuperBomberman
 
         public virtual void Update(GameTime gameTime)
         {
-            if (IsInvulnerable) { 
-            InvulnerableSwitchTime -= gameTime.ElapsedGameTime.Milliseconds;
-            if (InvulnerableSwitchTime <= 0)
-            {
-                InvulnerableSwitchTime = 50;
-                if (Image.image.Color == Color.White)
+            if (IsInvulnerable) 
+            { 
+                InvulnerableSwitchTime -= gameTime.ElapsedGameTime.Milliseconds;
+                if (InvulnerableSwitchTime <= 0)
                 {
-                    Image.image.Color = new Color(Color.White,0);
-                }
-                else if(Image.image.Color == new Color(Color.White, 0))
-                {
-                    Image.image.Color = Color.White;
+                    InvulnerableSwitchTime = 50;
+                    if (Image.image.Color == Color.White)
+                    {
+                        Image.image.Color = new Color(Color.White,0);
+                    }
+                    else if(Image.image.Color == new Color(Color.White, 0))
+                    {
+                        Image.image.Color = Color.White;
+                    }
                 }
             }
+            else if (Image.image.Color == new Color(Color.White, 0)) 
+            {
+                Image.image.Color = Color.White;
+            }
+            if(DelayedInvulnerable != null)
+            {
+                DelayedInvulnerable.Update(gameTime.ElapsedGameTime.Milliseconds);
             }
 
             Image.Update(gameTime);
@@ -77,6 +87,15 @@ namespace SuperBomberman
             Image.image.Position += velocity;
             CollisionRectangle.X = (int)Image.image.Position.X;
             CollisionRectangle.Y = (int)Image.image.Position.Y + (tileSize / 2);
+        }
+        public void InvulnerableOn(float time)
+        {
+            IsInvulnerable = true;
+            DelayedInvulnerable = new DelayedAction
+                (
+                 () => { IsInvulnerable = false; DelayedInvulnerable = null; }, time
+                );
+            DelayedInvulnerable.Start();
         }
     }
 }

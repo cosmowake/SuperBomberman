@@ -31,6 +31,16 @@ namespace SuperBomberman
                         rect = new Rectangle(1 * tileSize, 0, tileSize, tileSize);
                         break;
                     }
+                case BonusType.Move:
+                    {
+                        rect = new Rectangle(0 * tileSize, 0, tileSize, tileSize);
+                        break;
+                    }
+                case BonusType.Detonator:
+                    {
+                        rect = new Rectangle(0 * tileSize, 0, tileSize, tileSize);
+                        break;
+                    }
             }
 
             Image = new Image("Play/Bonus3x", rect, position);
@@ -48,6 +58,19 @@ namespace SuperBomberman
                 case BonusType.Power:
                     {
                         player.power++;
+                        break;
+                    }
+                case BonusType.Move:
+                    {
+                        if(player.MoveSpeed < 300)
+                        {
+                            player.power += 50;
+                        }
+                        break;
+                    }
+                case BonusType.Detonator:
+                    {
+                        player.isDetonatorBombs = true;
                         break;
                     }
             }
@@ -75,5 +98,5 @@ namespace SuperBomberman
         }
     }
 
-    public enum BonusType { Count, Power }
+    public enum BonusType { Count, Power, Move, Detonator }
 }

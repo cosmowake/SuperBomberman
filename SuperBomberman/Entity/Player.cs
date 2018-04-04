@@ -16,6 +16,7 @@ namespace SuperBomberman
         public List<Bomb> bombList = new List<Bomb>();
         public int bombMaxCount = 1;
         public int power = 1;
+        public bool isDetonatorBombs = false;
 
         public delegate Vector2 BombStand(Vector2 position);
         public BombStand BombStandDel;
@@ -37,7 +38,6 @@ namespace SuperBomberman
             Image = new AnimationImage(imageTemp, new List<int>(new int[4] { 0, 1, 0, 2 }));
 
         }
-
 
         void MoveUpdate(GameTime gameTime)
         {
@@ -100,7 +100,7 @@ namespace SuperBomberman
                 {
                     Vector2 position = BombStandDel(new Vector2(CollisionRectangle.X, CollisionRectangle.Y));
 
-                    Bomb bomb = new Bomb("Play/Bomb3x", position, 48);
+                    Bomb bomb = new Bomb("Play/Bomb3x", position, 48, isDetonatorBombs);
                     bomb.ExplosionBomb += () =>
                     {
                         bombList.Remove(bomb);
@@ -110,6 +110,16 @@ namespace SuperBomberman
                     bomb.LoadContent();
 
                     bombList.Add(bomb);
+                }
+            }
+            if (InputManager.Instance.KeyPressed(Keys.A))
+            {
+                if (isDetonatorBombs)
+                {
+                    if (bombList.Count != 0)
+                    {
+                        bombList[0].explosionAfterDelayed.Start();
+                    }
                 }
             }
         }
@@ -158,10 +168,6 @@ namespace SuperBomberman
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            foreach (Bomb bomb in bombList)
-            {
-                bomb.Draw(spriteBatch);
-            }
 
             base.Draw(spriteBatch);
         }
