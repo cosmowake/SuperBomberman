@@ -65,10 +65,10 @@ namespace SuperBomberman
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
             ScreenManager.Instance.Update(gameTime);
+
+            if (InputManager.Instance.KeyPressed(Keys.Back))
+                Exit();
 
             base.Update(gameTime);
         }

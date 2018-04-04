@@ -10,7 +10,7 @@ namespace SuperBomberman
 {
     class Bonus
     {
-        public Image Image;
+        public AnimationImage Image;
 
         BonusType bonusType;
         public Action Destroy;
@@ -23,27 +23,30 @@ namespace SuperBomberman
             {
                 case BonusType.Count:
                     {
-                        rect = new Rectangle(0 * tileSize, 0, tileSize, tileSize);
+                        rect = new Rectangle(0 * tileSize, 0 * tileSize, tileSize, tileSize);
                         break;
                     }
                 case BonusType.Power:
                     {
-                        rect = new Rectangle(1 * tileSize, 0, tileSize, tileSize);
+                        rect = new Rectangle(0 * tileSize, 1 * tileSize, tileSize, tileSize);
                         break;
                     }
                 case BonusType.Move:
                     {
-                        rect = new Rectangle(0 * tileSize, 0, tileSize, tileSize);
+                        rect = new Rectangle(0 * tileSize, 2 * tileSize, tileSize, tileSize);
                         break;
                     }
                 case BonusType.Detonator:
                     {
-                        rect = new Rectangle(0 * tileSize, 0, tileSize, tileSize);
+                        rect = new Rectangle(0 * tileSize, 3 * tileSize, tileSize, tileSize);
                         break;
                     }
             }
 
-            Image = new Image("Play/Bonus3x", rect, position);
+            Image imageTemp = new Image("Play/Bonus3x", rect, position);
+            Image = new AnimationImage(imageTemp, new List<int>(new int[] { 0, 1 }));
+            Image.SwitchTime = 200;
+            Image.StartAnimation();
         }
 
         public void GetBonusToPlayer(ref Player player)
@@ -64,7 +67,7 @@ namespace SuperBomberman
                     {
                         if(player.MoveSpeed < 300)
                         {
-                            player.power += 50;
+                            player.MoveSpeed += 50;
                         }
                         break;
                     }

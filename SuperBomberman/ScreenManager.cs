@@ -38,7 +38,7 @@ namespace SuperBomberman
 
         public ScreenManager()
         {
-            Dimensions = new Vector2(900, 624);
+            Dimensions = new Vector2(720, 624);
             gameScreen = new LogoScreen();
         }
 

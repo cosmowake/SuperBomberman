@@ -15,7 +15,7 @@ namespace SuperBomberman
     {
         public AnimationImage Image;
         public Vector2 Velocity;
-        public float MoveSpeed { get; protected set; }
+        public float MoveSpeed { get; set; }
 
         protected int tileSize;
 

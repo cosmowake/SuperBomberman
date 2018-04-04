@@ -51,8 +51,9 @@ namespace SuperBomberman
             {
                 activeMenuList = startMenuList;
 
-                startMenuList.Add(new MenuItem("Play", Color.Blue, MenuAppointment.Play));
-                startMenuList.Add(new MenuItem("Option", Color.White, MenuAppointment.Option));
+                startMenuList.Add(new MenuItem("Level one", Color.Blue, MenuAppointment.LevelOne));
+                startMenuList.Add(new MenuItem("Level two", Color.White, MenuAppointment.LevelTwo));
+                startMenuList.Add(new MenuItem("Level three", Color.White, MenuAppointment.LevelThree));
                 startMenuList.Add(new MenuItem("Exit", Color.White, MenuAppointment.Exit));
             }
 
@@ -99,7 +100,7 @@ namespace SuperBomberman
             }
         }
 
-        public enum MenuAppointment {Play, Option, Exit}
+        public enum MenuAppointment {LevelOne, LevelTwo, LevelThree, Exit}
 
 
         private SpriteFont font;
@@ -111,7 +112,7 @@ namespace SuperBomberman
 
             font = content.Load<SpriteFont>("Menu/Menu");
 
-            Rectangle rectCover = new Rectangle(380, 400, 900, 624);
+            Rectangle rectCover = new Rectangle(540, 400, 720, 624);
             cover = new Image("Menu/cover", rectCover);
             cover.LoadContent();
 
@@ -139,8 +140,16 @@ namespace SuperBomberman
             {
                 switch (MenuManager.Instance.GetActiveMenuAppointment())
                 {
-                    case MenuAppointment.Play:
-                        ScreenManager.Instance.ChangeScreen(new PlayScreen());
+                    case MenuAppointment.LevelOne:
+                        ScreenManager.Instance.ChangeScreen(new PlayScreen(1));
+                        break;
+                    case MenuAppointment.LevelTwo:
+                        ScreenManager.Instance.ChangeScreen(new PlayScreen(2));
+                        break;
+                    case MenuAppointment.LevelThree:
+                        ScreenManager.Instance.ChangeScreen(new PlayScreen(3));
+                        break;
+                    case MenuAppointment.Exit:
                         break;
                 }
 

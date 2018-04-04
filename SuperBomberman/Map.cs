@@ -28,16 +28,44 @@ namespace SuperBomberman
         AnimationNoLoopTilesManager destroyWalls;
         AnimationNoLoopTilesManager destroyEnemyAndBonus;
 
-        public Map(string spritePathMap, string spritePathExplosion)
+        public Map(int levelNumber, string spritePathExplosion)
         {
             ContentManager content = new ContentManager(ScreenManager.Instance.Content.ServiceProvider, "Content"); ;
-            sprite = content.Load<Texture2D>(spritePathMap);
+
+            string spritePathMap = null;
+
+            switch (levelNumber)
+            {
+
+                case 1:
+                    {
+                        spritePathMap = "Play/MapTile1_3x";
+                        sprite = content.Load<Texture2D>(spritePathMap);
+                        destroyWalls = new AnimationNoLoopTilesManager(spritePathMap);
+                        MapGenerator1(new Vector2(0, 0), 13, 15, 48, spritePathMap);
+                        break;
+                    }
+                case 2:
+                    {
+                        spritePathMap = "Play/MapTile2_3x";
+                        sprite = content.Load<Texture2D>(spritePathMap);
+                        destroyWalls = new AnimationNoLoopTilesManager(spritePathMap);
+                        MapGenerator2(new Vector2(0, 0), 13, 15, 48, spritePathMap);
+                        break;
+                    }
+                case 3:
+                    {
+                        spritePathMap = "Play/MapTile3_3x";
+                        sprite = content.Load<Texture2D>(spritePathMap);
+                        destroyWalls = new AnimationNoLoopTilesManager(spritePathMap);
+                        MapGenerator3(new Vector2(0, 0), 13, 15, 48, spritePathMap);
+                        break;
+                    }
+            }
 
             explosionList = new AnimationNoLoopTilesManager(spritePathExplosion);
-            destroyWalls = new AnimationNoLoopTilesManager(spritePathMap);
             destroyEnemyAndBonus = new AnimationNoLoopTilesManager("Play/Destroy3x");
             Position = Vector2.Zero;
-            MapGenerator1(new Vector2(0, 0), 13, 15, 48, spritePathMap);
         }
 
         void Explosion(Vector2 position, int power)
@@ -462,8 +490,8 @@ namespace SuperBomberman
             });
             enemyList.Add(enemy2);
 
-            k = 11;
-            p = 11;
+            k = 9;
+            p = 9;
             animatedWalls.mapTilesList[p, k] = null;
             enemyVector = GetVectorByXAndY(k, p);
             enemyPoint = new Point((int)enemyVector.X, (int)enemyVector.Y);
@@ -488,7 +516,7 @@ namespace SuperBomberman
             });
             enemyList.Add(enemy4);
 
-            k = 13;
+            k = 11;
             p = 5;
             animatedWalls.mapTilesList[p, k] = null;
             enemyVector = GetVectorByXAndY(k, p);
@@ -506,12 +534,26 @@ namespace SuperBomberman
                 e.LoadContent();
             }
 
-            teleport = new Teleport(GetVectorByXAndY(3, 3), 48);
+
+            k = 7;
+            p = 4;
+
+            if (animatedWalls.mapTilesList[k,p] == null)
+            {
+                animatedWalls.Add(p, k, tileSize, GetVectorByXAndY(p, k), DestroyTiles);
+            }
+            teleport = new Teleport(GetVectorByXAndY(p, k), 48);
             teleport.LoadContent();
             teleport.Image.StartAnimation();
 
 
-            Bonus bonus1 = new Bonus(BonusType.Count, GetVectorByXAndY(5, 1), tileSize);
+            k = 3;
+            p = 1;
+            if (animatedWalls.mapTilesList[k, p] == null)
+            {
+                animatedWalls.Add(p, k, tileSize, GetVectorByXAndY(p, k), DestroyTiles);
+            }
+            Bonus bonus1 = new Bonus(BonusType.Count, GetVectorByXAndY(p, k), tileSize);
             bonus1.Destroy = () =>
             {
                 bonusList.Remove(bonus1);
@@ -520,8 +562,13 @@ namespace SuperBomberman
             };
             bonusList.Add(bonus1);
 
-
-            Bonus bonus2 = new Bonus(BonusType.Power, GetVectorByXAndY(3, 1), tileSize);
+            k = 1;
+            p = 3;
+            if (animatedWalls.mapTilesList[k, p] == null)
+            {
+                animatedWalls.Add(p, k, tileSize, GetVectorByXAndY(p, k), DestroyTiles);
+            }
+            Bonus bonus2 = new Bonus(BonusType.Power, GetVectorByXAndY(p, k), tileSize);
             bonus2.Destroy = () =>
             {
                 bonusList.Remove(bonus2);
@@ -530,7 +577,13 @@ namespace SuperBomberman
             };
             bonusList.Add(bonus2);
 
-            Bonus bonus3 = new Bonus(BonusType.Detonator, GetVectorByXAndY(1, 3), tileSize);
+            k = 5;
+            p = 5;
+            if (animatedWalls.mapTilesList[k, p] == null)
+            {
+                animatedWalls.Add(p, k, tileSize, GetVectorByXAndY(p, k), DestroyTiles);
+            }
+            Bonus bonus3 = new Bonus(BonusType.Detonator, GetVectorByXAndY(p, k), tileSize);
             bonus3.Destroy = () =>
             {
                 bonusList.Remove(bonus3);
@@ -538,6 +591,467 @@ namespace SuperBomberman
                 bonus3 = null;
             };
             bonusList.Add(bonus3);
+
+            k = 1;
+            p = 5;
+            if (animatedWalls.mapTilesList[k, p] == null)
+            {
+                animatedWalls.Add(p, k, tileSize, GetVectorByXAndY(p, k), DestroyTiles);
+            }
+            Bonus bonus4 = new Bonus(BonusType.Move, GetVectorByXAndY(p, k), tileSize);
+            bonus4.Destroy = () =>
+            {
+                bonusList.Remove(bonus4);
+                bonus4.UnloadContent();
+                bonus4 = null;
+            };
+            bonusList.Add(bonus4);
+
+            foreach (Bonus b in bonusList)
+            {
+                b.LoadContent();
+            }
+        }
+
+        void MapGenerator2(Vector2 position, int heightMap, int widthMap, int tileSize, string spritePathMap)
+        {
+            Random random = new Random();
+
+            Position = position;
+            this.tileSize = tileSize;
+
+            Vector2 positionTemp = Vector2.Zero;
+
+            animatedWalls = new AnimatedMapTiles(spritePathMap, widthMap, heightMap, new List<int>(new int[] { 0 }));
+            mapTiles = new MapTile[heightMap, widthMap];
+            for (int i = 0; i < heightMap; i++)
+            {
+                for (int j = 0; j < widthMap; j++)
+                {
+                    if (i == 0 && j == 0)
+                    {
+                        mapTiles[i, j] = new MapTile(new Rectangle(tileSize * 0, tileSize * 3, tileSize, tileSize), position + positionTemp, true, true);
+                    }
+                    else if (i == 0 && j == widthMap - 1)
+                    {
+                        mapTiles[i, j] = new MapTile(new Rectangle(tileSize * 2, tileSize * 3, tileSize, tileSize), position + positionTemp, true, true);
+                    }
+                    else if (i == heightMap - 1 && j == 0)
+                    {
+                        mapTiles[i, j] = new MapTile(new Rectangle(tileSize * 0, tileSize * 5, tileSize, tileSize), position + positionTemp, true, true);
+                    }
+                    else if (i == heightMap - 1 && j == widthMap - 1)
+                    {
+                        mapTiles[i, j] = new MapTile(new Rectangle(tileSize * 2, tileSize * 5, tileSize, tileSize), position + positionTemp, true, true);
+                    }
+                    else if (i == 0)
+                    {
+                        mapTiles[i, j] = new MapTile(new Rectangle(tileSize * 1, tileSize * 3, tileSize, tileSize), position + positionTemp, true, true);
+                    }
+                    else if (i == heightMap - 1)
+                    {
+                        mapTiles[i, j] = new MapTile(new Rectangle(tileSize * 1, tileSize * 5, tileSize, tileSize), position + positionTemp, true, true);
+                    }
+                    else if (j == 0)
+                    {
+                        mapTiles[i, j] = new MapTile(new Rectangle(tileSize * 0, tileSize * 4, tileSize, tileSize), position + positionTemp, true, true);
+                    }
+                    else if (j == widthMap - 1)
+                    {
+                        mapTiles[i, j] = new MapTile(new Rectangle(tileSize * 2, tileSize * 4, tileSize, tileSize), position + positionTemp, true, true);
+                    }
+                    else if ((i > 1 && i < heightMap - 2 && i % 2 == 0) && (j > 1 && j < widthMap - 2 && j % 2 == 0))
+                    {
+                        mapTiles[i, j] = new MapTile(new Rectangle(tileSize * 1, tileSize * 4, tileSize, tileSize), position + positionTemp, true, true);
+                    }
+                    else
+                    {
+                        if (!((i == 1 && j == 1) || (i == 1 && j == 2) || (i == 2 && j == 1)))
+                        {
+                            if (random.Next(100) >= 60)
+                            {
+                                animatedWalls.Add(j, i, tileSize, GetVectorByXAndY(j, i), DestroyTiles);
+                            }
+                        }
+                        mapTiles[i, j] = new MapTile(new Rectangle(tileSize * 0, tileSize * 0, tileSize, tileSize), position + positionTemp, false, false);
+                    }
+
+                    positionTemp.X += tileSize;
+                }
+
+                positionTemp.X = 0;
+                positionTemp.Y += tileSize;
+            }
+
+            positionTemp.X = 0;
+            positionTemp.Y = 0;
+
+
+            int k = 5;
+            int p = 3;
+            animatedWalls.mapTilesList[p, k] = null;
+            Vector2 enemyVector = GetVectorByXAndY(k, p);
+            Point enemyPoint = new Point((int)enemyVector.X, (int)enemyVector.Y);
+            Puropen enemy1 = new Puropen(enemyPoint, 48);
+            enemy1.Hit = (() =>
+            {
+                enemyList.Remove(enemy1);
+                Console.WriteLine(enemy1.GetHashCode());
+            });
+            enemyList.Add(enemy1);
+
+            k = 9;
+            p = 5;
+            animatedWalls.mapTilesList[p, k] = null;
+            enemyVector = GetVectorByXAndY(k, p);
+            enemyPoint = new Point((int)enemyVector.X, (int)enemyVector.Y);
+            Puropen enemy2 = new Puropen(enemyPoint, 48);
+            enemy2.Hit = (() =>
+            {
+                enemyList.Remove(enemy2);
+                Console.WriteLine(enemy2.GetHashCode());
+            });
+            enemyList.Add(enemy2);
+
+            k = 9;
+            p = 9;
+            animatedWalls.mapTilesList[p, k] = null;
+            enemyVector = GetVectorByXAndY(k, p);
+            enemyPoint = new Point((int)enemyVector.X, (int)enemyVector.Y);
+            Puropen enemy3 = new Puropen(enemyPoint, 48);
+            enemy3.Hit = (() =>
+            {
+                enemyList.Remove(enemy3);
+                Console.WriteLine(enemy3.GetHashCode());
+            });
+            enemyList.Add(enemy3);
+
+            k = 5;
+            p = 7;
+            animatedWalls.mapTilesList[p, k] = null;
+            enemyVector = GetVectorByXAndY(k, p);
+            enemyPoint = new Point((int)enemyVector.X, (int)enemyVector.Y);
+            Puropen enemy4 = new Puropen(enemyPoint, 48);
+            enemy4.Hit = (() =>
+            {
+                enemyList.Remove(enemy4);
+                Console.WriteLine(enemy4.GetHashCode());
+            });
+            enemyList.Add(enemy4);
+
+            k = 11;
+            p = 5;
+            animatedWalls.mapTilesList[p, k] = null;
+            enemyVector = GetVectorByXAndY(k, p);
+            enemyPoint = new Point((int)enemyVector.X, (int)enemyVector.Y);
+            Puropen enemy5 = new Puropen(enemyPoint, 48);
+            enemy5.Hit = (() =>
+            {
+                enemyList.Remove(enemy5);
+                Console.WriteLine(enemy5.GetHashCode());
+            });
+            enemyList.Add(enemy5);
+
+            foreach (Enemy e in enemyList)
+            {
+                e.LoadContent();
+            }
+
+
+            k = 7;
+            p = 4;
+
+            if (animatedWalls.mapTilesList[k, p] == null)
+            {
+                animatedWalls.Add(p, k, tileSize, GetVectorByXAndY(p, k), DestroyTiles);
+            }
+            teleport = new Teleport(GetVectorByXAndY(p, k), 48);
+            teleport.LoadContent();
+            teleport.Image.StartAnimation();
+
+
+            k = 3;
+            p = 1;
+            if (animatedWalls.mapTilesList[k, p] == null)
+            {
+                animatedWalls.Add(p, k, tileSize, GetVectorByXAndY(p, k), DestroyTiles);
+            }
+            Bonus bonus1 = new Bonus(BonusType.Count, GetVectorByXAndY(p, k), tileSize);
+            bonus1.Destroy = () =>
+            {
+                bonusList.Remove(bonus1);
+                bonus1.UnloadContent();
+                bonus1 = null;
+            };
+            bonusList.Add(bonus1);
+
+            k = 1;
+            p = 3;
+            if (animatedWalls.mapTilesList[k, p] == null)
+            {
+                animatedWalls.Add(p, k, tileSize, GetVectorByXAndY(p, k), DestroyTiles);
+            }
+            Bonus bonus2 = new Bonus(BonusType.Power, GetVectorByXAndY(p, k), tileSize);
+            bonus2.Destroy = () =>
+            {
+                bonusList.Remove(bonus2);
+                bonus2.UnloadContent();
+                bonus2 = null;
+            };
+            bonusList.Add(bonus2);
+
+            k = 5;
+            p = 5;
+            if (animatedWalls.mapTilesList[k, p] == null)
+            {
+                animatedWalls.Add(p, k, tileSize, GetVectorByXAndY(p, k), DestroyTiles);
+            }
+            Bonus bonus3 = new Bonus(BonusType.Detonator, GetVectorByXAndY(p, k), tileSize);
+            bonus3.Destroy = () =>
+            {
+                bonusList.Remove(bonus3);
+                bonus3.UnloadContent();
+                bonus3 = null;
+            };
+            bonusList.Add(bonus3);
+
+            k = 1;
+            p = 5;
+            if (animatedWalls.mapTilesList[k, p] == null)
+            {
+                animatedWalls.Add(p, k, tileSize, GetVectorByXAndY(p, k), DestroyTiles);
+            }
+            Bonus bonus4 = new Bonus(BonusType.Move, GetVectorByXAndY(p, k), tileSize);
+            bonus4.Destroy = () =>
+            {
+                bonusList.Remove(bonus4);
+                bonus4.UnloadContent();
+                bonus4 = null;
+            };
+            bonusList.Add(bonus4);
+
+            foreach (Bonus b in bonusList)
+            {
+                b.LoadContent();
+            }
+        }
+
+        void MapGenerator3(Vector2 position, int heightMap, int widthMap, int tileSize, string spritePathMap)
+        {
+            Random random = new Random();
+
+            Position = position;
+            this.tileSize = tileSize;
+
+            Vector2 positionTemp = Vector2.Zero;
+
+            animatedWalls = new AnimatedMapTiles(spritePathMap, widthMap, heightMap, new List<int>(new int[] { 0,1,2,3,4 }));
+            mapTiles = new MapTile[heightMap, widthMap];
+            for (int i = 0; i < heightMap; i++)
+            {
+                for (int j = 0; j < widthMap; j++)
+                {
+                    if (i == 0 && j == 0)
+                    {
+                        mapTiles[i, j] = new MapTile(new Rectangle(tileSize * 0, tileSize * 3, tileSize, tileSize), position + positionTemp, true, true);
+                    }
+                    else if (i == 0 && j == widthMap - 1)
+                    {
+                        mapTiles[i, j] = new MapTile(new Rectangle(tileSize * 2, tileSize * 3, tileSize, tileSize), position + positionTemp, true, true);
+                    }
+                    else if (i == heightMap - 1 && j == 0)
+                    {
+                        mapTiles[i, j] = new MapTile(new Rectangle(tileSize * 0, tileSize * 5, tileSize, tileSize), position + positionTemp, true, true);
+                    }
+                    else if (i == heightMap - 1 && j == widthMap - 1)
+                    {
+                        mapTiles[i, j] = new MapTile(new Rectangle(tileSize * 2, tileSize * 5, tileSize, tileSize), position + positionTemp, true, true);
+                    }
+                    else if (i == 0)
+                    {
+                        mapTiles[i, j] = new MapTile(new Rectangle(tileSize * 1, tileSize * 3, tileSize, tileSize), position + positionTemp, true, true);
+                    }
+                    else if (i == heightMap - 1)
+                    {
+                        mapTiles[i, j] = new MapTile(new Rectangle(tileSize * 1, tileSize * 5, tileSize, tileSize), position + positionTemp, true, true);
+                    }
+                    else if (j == 0)
+                    {
+                        mapTiles[i, j] = new MapTile(new Rectangle(tileSize * 0, tileSize * 4, tileSize, tileSize), position + positionTemp, true, true);
+                    }
+                    else if (j == widthMap - 1)
+                    {
+                        mapTiles[i, j] = new MapTile(new Rectangle(tileSize * 2, tileSize * 4, tileSize, tileSize), position + positionTemp, true, true);
+                    }
+                    else if ((i > 1 && i < heightMap - 2 && i % 2 == 0) && (j > 1 && j < widthMap - 2 && j % 2 == 0))
+                    {
+                        mapTiles[i, j] = new MapTile(new Rectangle(tileSize * 1, tileSize * 4, tileSize, tileSize), position + positionTemp, true, true);
+                    }
+                    else
+                    {
+                        if (!((i == 1 && j == 1) || (i == 1 && j == 2) || (i == 2 && j == 1)))
+                        {
+                            if (random.Next(100) >= 60)
+                            {
+                                animatedWalls.Add(j, i, tileSize, GetVectorByXAndY(j, i), DestroyTiles);
+                            }
+                        }
+                        mapTiles[i, j] = new MapTile(new Rectangle(tileSize * 0, tileSize * 0, tileSize, tileSize), position + positionTemp, false, false);
+                    }
+
+                    positionTemp.X += tileSize;
+                }
+
+                positionTemp.X = 0;
+                positionTemp.Y += tileSize;
+            }
+
+            positionTemp.X = 0;
+            positionTemp.Y = 0;
+
+
+            int k = 5;
+            int p = 3;
+            animatedWalls.mapTilesList[p, k] = null;
+            Vector2 enemyVector = GetVectorByXAndY(k, p);
+            Point enemyPoint = new Point((int)enemyVector.X, (int)enemyVector.Y);
+            Puropen enemy1 = new Puropen(enemyPoint, 48);
+            enemy1.Hit = (() =>
+            {
+                enemyList.Remove(enemy1);
+                Console.WriteLine(enemy1.GetHashCode());
+            });
+            enemyList.Add(enemy1);
+
+            k = 9;
+            p = 5;
+            animatedWalls.mapTilesList[p, k] = null;
+            enemyVector = GetVectorByXAndY(k, p);
+            enemyPoint = new Point((int)enemyVector.X, (int)enemyVector.Y);
+            Puropen enemy2 = new Puropen(enemyPoint, 48);
+            enemy2.Hit = (() =>
+            {
+                enemyList.Remove(enemy2);
+                Console.WriteLine(enemy2.GetHashCode());
+            });
+            enemyList.Add(enemy2);
+
+            k = 9;
+            p = 9;
+            animatedWalls.mapTilesList[p, k] = null;
+            enemyVector = GetVectorByXAndY(k, p);
+            enemyPoint = new Point((int)enemyVector.X, (int)enemyVector.Y);
+            Puropen enemy3 = new Puropen(enemyPoint, 48);
+            enemy3.Hit = (() =>
+            {
+                enemyList.Remove(enemy3);
+                Console.WriteLine(enemy3.GetHashCode());
+            });
+            enemyList.Add(enemy3);
+
+            k = 5;
+            p = 7;
+            animatedWalls.mapTilesList[p, k] = null;
+            enemyVector = GetVectorByXAndY(k, p);
+            enemyPoint = new Point((int)enemyVector.X, (int)enemyVector.Y);
+            Puropen enemy4 = new Puropen(enemyPoint, 48);
+            enemy4.Hit = (() =>
+            {
+                enemyList.Remove(enemy4);
+                Console.WriteLine(enemy4.GetHashCode());
+            });
+            enemyList.Add(enemy4);
+
+            k = 11;
+            p = 5;
+            animatedWalls.mapTilesList[p, k] = null;
+            enemyVector = GetVectorByXAndY(k, p);
+            enemyPoint = new Point((int)enemyVector.X, (int)enemyVector.Y);
+            Puropen enemy5 = new Puropen(enemyPoint, 48);
+            enemy5.Hit = (() =>
+            {
+                enemyList.Remove(enemy5);
+                Console.WriteLine(enemy5.GetHashCode());
+            });
+            enemyList.Add(enemy5);
+
+            foreach (Enemy e in enemyList)
+            {
+                e.LoadContent();
+            }
+
+
+            k = 7;
+            p = 4;
+
+            if (animatedWalls.mapTilesList[k, p] == null)
+            {
+                animatedWalls.Add(p, k, tileSize, GetVectorByXAndY(p, k), DestroyTiles);
+            }
+            teleport = new Teleport(GetVectorByXAndY(p, k), 48);
+            teleport.LoadContent();
+            teleport.Image.StartAnimation();
+
+
+            k = 3;
+            p = 1;
+            if (animatedWalls.mapTilesList[k, p] == null)
+            {
+                animatedWalls.Add(p, k, tileSize, GetVectorByXAndY(p, k), DestroyTiles);
+            }
+            Bonus bonus1 = new Bonus(BonusType.Count, GetVectorByXAndY(p, k), tileSize);
+            bonus1.Destroy = () =>
+            {
+                bonusList.Remove(bonus1);
+                bonus1.UnloadContent();
+                bonus1 = null;
+            };
+            bonusList.Add(bonus1);
+
+            k = 1;
+            p = 3;
+            if (animatedWalls.mapTilesList[k, p] == null)
+            {
+                animatedWalls.Add(p, k, tileSize, GetVectorByXAndY(p, k), DestroyTiles);
+            }
+            Bonus bonus2 = new Bonus(BonusType.Power, GetVectorByXAndY(p, k), tileSize);
+            bonus2.Destroy = () =>
+            {
+                bonusList.Remove(bonus2);
+                bonus2.UnloadContent();
+                bonus2 = null;
+            };
+            bonusList.Add(bonus2);
+
+            k = 5;
+            p = 5;
+            if (animatedWalls.mapTilesList[k, p] == null)
+            {
+                animatedWalls.Add(p, k, tileSize, GetVectorByXAndY(p, k), DestroyTiles);
+            }
+            Bonus bonus3 = new Bonus(BonusType.Detonator, GetVectorByXAndY(p, k), tileSize);
+            bonus3.Destroy = () =>
+            {
+                bonusList.Remove(bonus3);
+                bonus3.UnloadContent();
+                bonus3 = null;
+            };
+            bonusList.Add(bonus3);
+
+            k = 1;
+            p = 5;
+            if (animatedWalls.mapTilesList[k, p] == null)
+            {
+                animatedWalls.Add(p, k, tileSize, GetVectorByXAndY(p, k), DestroyTiles);
+            }
+            Bonus bonus4 = new Bonus(BonusType.Move, GetVectorByXAndY(p, k), tileSize);
+            bonus4.Destroy = () =>
+            {
+                bonusList.Remove(bonus4);
+                bonus4.UnloadContent();
+                bonus4 = null;
+            };
+            bonusList.Add(bonus4);
 
             foreach (Bonus b in bonusList)
             {
@@ -561,8 +1075,7 @@ namespace SuperBomberman
             destroyWalls.AnimationNoLoopTilesList.Add(tempAnimationNoLoopTilesList);
             animatedWalls.mapTilesList[y, x] = null;
         }
-
-
+        
         void DestroyEnemyAndBonus(Vector2 position)
         {
             MapTile tempMapTile = new MapTile(new Rectangle(0, 0, tileSize, tileSize), position);
@@ -825,9 +1338,9 @@ namespace SuperBomberman
 
                 for (int q = 0; q < bonusList.Count; q++)
                 {
-                    Rectangle tileRect = new Rectangle((int)bonusList[q].Image.Position.X, (int)bonusList[q].Image.Position.Y, tileSize, tileSize);
+                    Rectangle tileRect = new Rectangle((int)bonusList[q].Image.image.Position.X, (int)bonusList[q].Image.image.Position.Y, tileSize, tileSize);
 
-                    if (player.CollisionRectangle.Intersects(tileRect) && (GetXAndYByVector(player.Position) == GetXAndYByVector(bonusList[q].Image.Position)))
+                    if (player.CollisionRectangle.Intersects(tileRect) && (GetXAndYByVector(player.Position) == GetXAndYByVector(bonusList[q].Image.image.Position)))
                     {
                         bonusList[q].GetBonusToPlayer(ref player);
                     }
@@ -933,21 +1446,23 @@ namespace SuperBomberman
             for(int i  = 0; i < bonusList.Count;i++)
             {
                 Bonus bonus = bonusList[i];
+                bonus.Update(gameTime);
                 foreach (AnimationNoLoopTilesList mapTileList in explosionList.AnimationNoLoopTilesList)
                 {
                     foreach (MapTile mapTile in mapTileList.AnimationNoLoopTileList)
                     {
                         MapTile m = mapTile;
                         Rectangle tileRect = new Rectangle((int)mapTile.Position.X, (int)mapTile.Position.Y, mapTile.SourceRectangle.Width, mapTile.SourceRectangle.Height);
-                        Rectangle bonusRect = new Rectangle((int)bonus.Image.Position.X, (int)bonus.Image.Position.Y, tileSize,tileSize);
-                        if (bonusRect.Intersects(tileRect) && (GetXAndYByVector(bonus.Image.Position) == GetXAndYByVector(m.Position)))
+                        Rectangle bonusRect = new Rectangle((int)bonus.Image.image.Position.X, (int)bonus.Image.image.Position.Y, tileSize,tileSize);
+                        if (bonusRect.Intersects(tileRect) && (GetXAndYByVector(bonus.Image.image.Position) == GetXAndYByVector(m.Position)))
                         {
-                            DestroyEnemyAndBonus(bonus.Image.Position);
+                            DestroyEnemyAndBonus(bonus.Image.image.Position);
                             bonus.Destroy();
                         }
                     }
                 }
             }
+
 
             teleport.Update(gameTime);
 
@@ -966,7 +1481,7 @@ namespace SuperBomberman
 
             foreach (Bonus bonus in bonusList)
             {
-                Point tempPoint = GetXAndYByVector(bonus.Image.Position);
+                Point tempPoint = GetXAndYByVector(bonus.Image.image.Position);
                 if (animatedWalls.mapTilesList[tempPoint.Y, tempPoint.X] == null)
                 {
                     bonus.Draw(spriteBatch);

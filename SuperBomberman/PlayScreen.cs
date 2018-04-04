@@ -15,15 +15,19 @@ namespace SuperBomberman
     {
         Map map;
 
+        int Level = 1;
+
+        public PlayScreen(int level)
+        {
+            Level = level;
+        }
 
         public override void LoadContent()
         {
             base.LoadContent();
 
-            map = new Map("Play/MapTile1_3x","Play/Explosion3x");
+            map = new Map(Level, "Play/Explosion3x");
             map.LoadContent();
-
-            
             
         }
 
@@ -35,6 +39,11 @@ namespace SuperBomberman
 
         public override void Update(GameTime gameTime)
         {
+            if (InputManager.Instance.KeyDown(Keys.Escape))
+            {
+                ScreenManager.Instance.ChangeScreen(new MenuScreen());
+            }
+
             base.Update(gameTime);
             map.Update(gameTime);
         }
