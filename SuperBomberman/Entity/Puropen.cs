@@ -14,7 +14,7 @@ namespace SuperBomberman
 
         public Puropen(Point startPoint, int tileSize)
         {
-            MoveSpeed = 100.0f;
+            MoveSpeed = 75.0f;
             HitPoints = 0;
             DirectionState = DirectionState.Left;
             HitPoints = 1;

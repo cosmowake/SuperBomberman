@@ -20,7 +20,11 @@ namespace SuperBomberman
         public override void LoadContent()
         {
             base.LoadContent();
-            logo = new Image("Logo/logo", new Rectangle(0,0,541,257));
+
+            Rectangle rect = new Rectangle(0,0,541,257);
+            Vector2 pos = new Vector2((ScreenManager.Instance.Dimensions.X / 2) - (rect.Width / 2), (ScreenManager.Instance.Dimensions.Y / 2) - (rect.Height / 2));
+            
+            logo = new Image("Logo/logo", rect, pos);
             logo.LoadContent();
         }
 

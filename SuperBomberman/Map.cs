@@ -37,7 +37,7 @@ namespace SuperBomberman
             destroyWalls = new AnimationNoLoopTilesManager(spritePathMap);
             destroyEnemyAndBonus = new AnimationNoLoopTilesManager("Play/Destroy3x");
             Position = Vector2.Zero;
-            MapGenerator1(new Vector2(0, 0), 15, 21, 48, spritePathMap);
+            MapGenerator1(new Vector2(0, 0), 13, 15, 48, spritePathMap);
         }
 
         void Explosion(Vector2 position, int power)

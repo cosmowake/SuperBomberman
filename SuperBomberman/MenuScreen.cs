@@ -12,6 +12,7 @@ namespace SuperBomberman
 {
     class MenuScreen : GameScreen
     {
+        Image cover;
         public class MenuItem
         {
             public string Title { set; get; }
@@ -110,11 +111,16 @@ namespace SuperBomberman
 
             font = content.Load<SpriteFont>("Menu/Menu");
 
+            Rectangle rectCover = new Rectangle(380, 400, 900, 624);
+            cover = new Image("Menu/cover", rectCover);
+            cover.LoadContent();
+
         }
 
         public override void UnloadContent()
         {
             base.UnloadContent();
+            cover.UnloadContent();
         }
 
         public override void Update(GameTime gameTime)
@@ -144,7 +150,7 @@ namespace SuperBomberman
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-
+            cover.Draw(spriteBatch);
             for(int i = 0; i < MenuManager.Instance.activeMenuList.Count; i++)
             {
                 spriteBatch.DrawString(
