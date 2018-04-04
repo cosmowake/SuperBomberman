@@ -538,7 +538,7 @@ namespace SuperBomberman
             k = 7;
             p = 4;
 
-            if (animatedWalls.mapTilesList[k,p] == null)
+            if (animatedWalls.mapTilesList[k, p] == null)
             {
                 animatedWalls.Add(p, k, tileSize, GetVectorByXAndY(p, k), DestroyTiles);
             }
@@ -692,11 +692,19 @@ namespace SuperBomberman
             animatedWalls.mapTilesList[p, k] = null;
             Vector2 enemyVector = GetVectorByXAndY(k, p);
             Point enemyPoint = new Point((int)enemyVector.X, (int)enemyVector.Y);
-            Puropen enemy1 = new Puropen(enemyPoint, 48);
+            Denkyun enemy1 = new Denkyun(enemyPoint, 48);
             enemy1.Hit = (() =>
             {
-                enemyList.Remove(enemy1);
-                Console.WriteLine(enemy1.GetHashCode());
+                enemy1.HitPoints--;
+                if (enemy1.HitPoints == 0)
+                {
+                    enemyList.Remove(enemy1);
+                    Console.WriteLine(enemy1.GetHashCode());
+                }
+                else
+                {
+                    enemy1.InvulnerableOn(2500);
+                }
             });
             enemyList.Add(enemy1);
 
@@ -705,11 +713,19 @@ namespace SuperBomberman
             animatedWalls.mapTilesList[p, k] = null;
             enemyVector = GetVectorByXAndY(k, p);
             enemyPoint = new Point((int)enemyVector.X, (int)enemyVector.Y);
-            Puropen enemy2 = new Puropen(enemyPoint, 48);
+            Denkyun enemy2 = new Denkyun(enemyPoint, 48);
             enemy2.Hit = (() =>
             {
-                enemyList.Remove(enemy2);
-                Console.WriteLine(enemy2.GetHashCode());
+                enemy1.HitPoints--;
+                if (enemy1.HitPoints == 0)
+                {
+                    enemyList.Remove(enemy1);
+                    Console.WriteLine(enemy1.GetHashCode());
+                }
+                else
+                {
+                    enemy1.InvulnerableOn(2500);
+                }
             });
             enemyList.Add(enemy2);
 
@@ -718,11 +734,19 @@ namespace SuperBomberman
             animatedWalls.mapTilesList[p, k] = null;
             enemyVector = GetVectorByXAndY(k, p);
             enemyPoint = new Point((int)enemyVector.X, (int)enemyVector.Y);
-            Puropen enemy3 = new Puropen(enemyPoint, 48);
+            Denkyun enemy3 = new Denkyun(enemyPoint, 48);
             enemy3.Hit = (() =>
             {
-                enemyList.Remove(enemy3);
-                Console.WriteLine(enemy3.GetHashCode());
+                enemy1.HitPoints--;
+                if (enemy1.HitPoints == 0)
+                {
+                    enemyList.Remove(enemy1);
+                    Console.WriteLine(enemy1.GetHashCode());
+                }
+                else
+                {
+                    enemy1.InvulnerableOn(2500);
+                }
             });
             enemyList.Add(enemy3);
 
@@ -731,11 +755,19 @@ namespace SuperBomberman
             animatedWalls.mapTilesList[p, k] = null;
             enemyVector = GetVectorByXAndY(k, p);
             enemyPoint = new Point((int)enemyVector.X, (int)enemyVector.Y);
-            Puropen enemy4 = new Puropen(enemyPoint, 48);
+            Denkyun enemy4 = new Denkyun(enemyPoint, 48);
             enemy4.Hit = (() =>
             {
-                enemyList.Remove(enemy4);
-                Console.WriteLine(enemy4.GetHashCode());
+                enemy1.HitPoints--;
+                if (enemy1.HitPoints == 0)
+                {
+                    enemyList.Remove(enemy1);
+                    Console.WriteLine(enemy1.GetHashCode());
+                }
+                else
+                {
+                    enemy1.InvulnerableOn(2500);
+                }
             });
             enemyList.Add(enemy4);
 
@@ -744,11 +776,19 @@ namespace SuperBomberman
             animatedWalls.mapTilesList[p, k] = null;
             enemyVector = GetVectorByXAndY(k, p);
             enemyPoint = new Point((int)enemyVector.X, (int)enemyVector.Y);
-            Puropen enemy5 = new Puropen(enemyPoint, 48);
+            Denkyun enemy5 = new Denkyun(enemyPoint, 48);
             enemy5.Hit = (() =>
             {
-                enemyList.Remove(enemy5);
-                Console.WriteLine(enemy5.GetHashCode());
+                enemy1.HitPoints--;
+                if (enemy1.HitPoints == 0)
+                {
+                    enemyList.Remove(enemy1);
+                    Console.WriteLine(enemy1.GetHashCode());
+                }
+                else
+                {
+                    enemy1.InvulnerableOn(2500);
+                }
             });
             enemyList.Add(enemy5);
 
@@ -845,7 +885,7 @@ namespace SuperBomberman
 
             Vector2 positionTemp = Vector2.Zero;
 
-            animatedWalls = new AnimatedMapTiles(spritePathMap, widthMap, heightMap, new List<int>(new int[] { 0,1,2,3,4 }));
+            animatedWalls = new AnimatedMapTiles(spritePathMap, widthMap, heightMap, new List<int>(new int[] { 0, 1, 2, 3, 4 }));
             mapTiles = new MapTile[heightMap, widthMap];
             for (int i = 0; i < heightMap; i++)
             {
@@ -1075,7 +1115,7 @@ namespace SuperBomberman
             destroyWalls.AnimationNoLoopTilesList.Add(tempAnimationNoLoopTilesList);
             animatedWalls.mapTilesList[y, x] = null;
         }
-        
+
         void DestroyEnemyAndBonus(Vector2 position)
         {
             MapTile tempMapTile = new MapTile(new Rectangle(0, 0, tileSize, tileSize), position);
@@ -1273,6 +1313,16 @@ namespace SuperBomberman
             }
         }
 
+
+        void Collision(ref Enemy enemy1, ref Enemy enemy2)
+        {
+            if (enemy1.CollisionRectangle.Intersects(enemy2.CollisionRectangle))
+            {
+                enemy1.CollisionChangePosition();
+                enemy2.CollisionChangePosition();
+            }
+        }
+
         public void Update(GameTime gameTime)
         {
             foreach (Player p in playerList)
@@ -1381,6 +1431,13 @@ namespace SuperBomberman
                 enemyList[i].Update(gameTime);
                 Enemy enemy = enemyList[i];
 
+                //for (int j = 0; j < enemyList.Count; j++)
+                //{
+                //    Enemy enemyTemp = enemyList[j];
+                //    if (i != j)
+                //    Collision(ref enemy, ref enemyTemp);
+                //}
+
                 foreach (MapTile mapTile in mapTiles)
                 {
                     MapTile m = mapTile;
@@ -1390,10 +1447,10 @@ namespace SuperBomberman
                 foreach (Player p in playerList)
                 {
                     if (!p.isDead && !p.IsInvulnerable)
-                    { 
+                    {
                         if (enemy.CollisionRectangle.Intersects(p.CollisionRectangle) && (GetXAndYByVector(enemy.Position) == GetXAndYByVector(p.Position)))
                         {
-                        
+
                             p.Hit();
                         }
                     }
@@ -1415,7 +1472,8 @@ namespace SuperBomberman
 
                 foreach (AnimationNoLoopTilesList mapTileList in explosionList.AnimationNoLoopTilesList)
                 {
-                    if (!enemy.IsInvulnerable) {
+                    if (!enemy.IsInvulnerable)
+                    {
                         foreach (MapTile mapTile in mapTileList.AnimationNoLoopTileList)
                         {
                             MapTile m = mapTile;
@@ -1443,7 +1501,7 @@ namespace SuperBomberman
                     }
                 }
             }
-            for(int i  = 0; i < bonusList.Count;i++)
+            for (int i = 0; i < bonusList.Count; i++)
             {
                 Bonus bonus = bonusList[i];
                 bonus.Update(gameTime);
@@ -1453,7 +1511,7 @@ namespace SuperBomberman
                     {
                         MapTile m = mapTile;
                         Rectangle tileRect = new Rectangle((int)mapTile.Position.X, (int)mapTile.Position.Y, mapTile.SourceRectangle.Width, mapTile.SourceRectangle.Height);
-                        Rectangle bonusRect = new Rectangle((int)bonus.Image.image.Position.X, (int)bonus.Image.image.Position.Y, tileSize,tileSize);
+                        Rectangle bonusRect = new Rectangle((int)bonus.Image.image.Position.X, (int)bonus.Image.image.Position.Y, tileSize, tileSize);
                         if (bonusRect.Intersects(tileRect) && (GetXAndYByVector(bonus.Image.image.Position) == GetXAndYByVector(m.Position)))
                         {
                             DestroyEnemyAndBonus(bonus.Image.image.Position);
@@ -1500,7 +1558,7 @@ namespace SuperBomberman
             animatedWalls.Draw(spriteBatch);
             explosionList.Draw(spriteBatch);
 
-            foreach(Player p in playerList)
+            foreach (Player p in playerList)
             {
                 foreach (Bomb bomb in p.bombList)
                 {

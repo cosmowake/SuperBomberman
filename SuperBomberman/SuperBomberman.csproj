@@ -47,8 +47,9 @@
     <Compile Include="AnimationImage.cs" />
     <Compile Include="Bomb.cs" />
     <Compile Include="Bonus.cs" />
-    <Compile Include="Entity\Enemy.cs" />
-    <Compile Include="Entity\Entity.cs" />
+    <Compile Include="Entitys\Denkyun.cs" />
+    <Compile Include="Entitys\Enemy.cs" />
+    <Compile Include="Entitys\Entity.cs" />
     <Compile Include="GameScreen.cs" />
     <Compile Include="Interfaces.cs" />
     <Compile Include="Image.cs" />
@@ -56,9 +57,9 @@
     <Compile Include="LogoScreen.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="MenuScreen.cs" />
-    <Compile Include="Entity\Player.cs" />
+    <Compile Include="Entitys\Player.cs" />
     <Compile Include="PlayScreen.cs" />
-    <Compile Include="Entity\Puropen.cs" />
+    <Compile Include="Entitys\Puropen.cs" />
     <Compile Include="ScreenManager.cs" />
     <Compile Include="SuperBomberman.cs" />
     <Compile Include="Program.cs" />
