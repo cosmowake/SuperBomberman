@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SuperBomberman.Entitys;
 
 namespace SuperBomberman
 {
@@ -955,7 +956,7 @@ namespace SuperBomberman
             animatedWalls.mapTilesList[p, k] = null;
             Vector2 enemyVector = GetVectorByXAndY(k, p);
             Point enemyPoint = new Point((int)enemyVector.X, (int)enemyVector.Y);
-            Puropen enemy1 = new Puropen(enemyPoint, 48);
+            Bakuda enemy1 = new Bakuda(enemyPoint, 48);
             enemy1.Hit = (() =>
             {
                 enemyList.Remove(enemy1);
@@ -968,7 +969,7 @@ namespace SuperBomberman
             animatedWalls.mapTilesList[p, k] = null;
             enemyVector = GetVectorByXAndY(k, p);
             enemyPoint = new Point((int)enemyVector.X, (int)enemyVector.Y);
-            Puropen enemy2 = new Puropen(enemyPoint, 48);
+            Bakuda enemy2 = new Bakuda(enemyPoint, 48);
             enemy2.Hit = (() =>
             {
                 enemyList.Remove(enemy2);
@@ -981,7 +982,7 @@ namespace SuperBomberman
             animatedWalls.mapTilesList[p, k] = null;
             enemyVector = GetVectorByXAndY(k, p);
             enemyPoint = new Point((int)enemyVector.X, (int)enemyVector.Y);
-            Puropen enemy3 = new Puropen(enemyPoint, 48);
+            Bakuda enemy3 = new Bakuda(enemyPoint, 48);
             enemy3.Hit = (() =>
             {
                 enemyList.Remove(enemy3);
@@ -994,7 +995,7 @@ namespace SuperBomberman
             animatedWalls.mapTilesList[p, k] = null;
             enemyVector = GetVectorByXAndY(k, p);
             enemyPoint = new Point((int)enemyVector.X, (int)enemyVector.Y);
-            Puropen enemy4 = new Puropen(enemyPoint, 48);
+            Bakuda enemy4 = new Bakuda(enemyPoint, 48);
             enemy4.Hit = (() =>
             {
                 enemyList.Remove(enemy4);
@@ -1007,7 +1008,7 @@ namespace SuperBomberman
             animatedWalls.mapTilesList[p, k] = null;
             enemyVector = GetVectorByXAndY(k, p);
             enemyPoint = new Point((int)enemyVector.X, (int)enemyVector.Y);
-            Puropen enemy5 = new Puropen(enemyPoint, 48);
+            Bakuda enemy5 = new Bakuda(enemyPoint, 48);
             enemy5.Hit = (() =>
             {
                 enemyList.Remove(enemy5);

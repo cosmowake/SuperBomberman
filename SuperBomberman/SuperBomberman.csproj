@@ -47,6 +47,7 @@
     <Compile Include="AnimationImage.cs" />
     <Compile Include="Bomb.cs" />
     <Compile Include="Bonus.cs" />
+    <Compile Include="Entitys\Bakuda.cs" />
     <Compile Include="Entitys\Denkyun.cs" />
     <Compile Include="Entitys\Enemy.cs" />
     <Compile Include="Entitys\Entity.cs" />
